@@ -3,6 +3,8 @@ class DangerzoneGenerator < Rails::Generators::Base
 
   source_root File.expand_path('../templates', __FILE__)
 
+  # add this config.action_mailer.default_url_options = { :host => 'localhost' } to environment.rb?
+
   def edit_the_routes_file
     routes = IO.read(get_directory + '/templates/routes.rb')
     line = "::Application.routes.draw do"
@@ -11,16 +13,12 @@ class DangerzoneGenerator < Rails::Generators::Base
     end
   end
 
-  def generate_the_users_migration_file
-    copy_file "migration.rb", "db/migrate/#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_create_users_table_via_dangerzone.rb"
-  end
-
   def generate_the_nav_partial
-    copy_file "views/nav.html.erb", "app/views/layouts/dangerzone_nav.html.erb"
+    copy_file "views/nav.html.erb", "app/views/layouts/_dangerzone_nav.html.erb"
   end
 
   def add_nav_partial_to_application_html_erb
-    nav = "<%= render 'dangerzone_nav' %>"
+    nav = "<%= render 'layouts/dangerzone_nav' %>"
     line = "<body>"
     gsub_file 'app/views/layouts/application.html.erb', /(#{Regexp.escape(line)})/mi do |match|
       "#{match}\n#{nav}\n"
@@ -71,6 +69,22 @@ class DangerzoneGenerator < Rails::Generators::Base
     copy_file "views/reset_passwords/send_reset_password.html.erb", "app/views/reset_passwords/send_reset_password.html.erb"
 
     copy_file "views/sessions/new.html.erb", "app/views/sessions/new.html.erb"
+  end
+
+  include Rails::Generators::Migration
+  desc "add the migrations"
+
+  def self.next_migration_number(path)
+    unless @prev_migration_nr
+      @prev_migration_nr = Time.now.utc.strftime("%Y%m%d%H%M%S").to_i
+    else
+      @prev_migration_nr += 1
+    end
+    @prev_migration_nr.to_s
+  end
+
+  def generate_the_users_migration_file
+    migration_template "migration.rb", "db/migrate/create_users_table_via_dangerzone.rb"
   end
 
   private
