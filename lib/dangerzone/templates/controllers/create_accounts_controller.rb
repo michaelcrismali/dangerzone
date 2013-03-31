@@ -9,7 +9,7 @@ class CreateAccountsController < ApplicationController
       DangerzoneMailer.account_confirmation_email(@user).deliver
       redirect_to check_your_email_url
     else
-      render signup_url
+      render sign_up_url
     end
   end
 
@@ -36,7 +36,7 @@ class CreateAccountsController < ApplicationController
       session[:email] = @user.email
       redirect_to root_url
     else
-      redirect_to signup_url
+      redirect_to sign_up_url
     end
   end
 

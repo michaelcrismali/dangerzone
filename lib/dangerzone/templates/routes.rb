@@ -2,11 +2,11 @@ APPNAME::Application.routes.draw do
 #find this ^ and draw in the stuff below
 
   resources :sessions, :only => [ :create, :new ]
-  get '/signin' => 'sessions#new', :as => 'signin'
-  delete '/sign-out' => 'sessions#destroy', :as => 'signout'
+  get '/signin' => 'sessions#new', :as => 'sign_in'
+  delete '/sign-out' => 'sessions#destroy', :as => 'sign_out'
 
   resources :create_accounts, :only => [ :new, :create ]
-  get '/signup' => 'create_accounts#new', :as => 'signup'
+  get '/signup' => 'create_accounts#new', :as => 'sign_up'
   get '/signup/:id/:reset_password_token' => 'create_accounts#confirm', :as => 'confirm'
   get '/check_your_email' => 'create_accounts#check_your_email', as: 'check_your_email'
   put '/resend_confirmation_email' => 'create_accounts#resend_confirmation_email', as: 'resend_confirmation_email'
