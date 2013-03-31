@@ -14,6 +14,14 @@ class DangerzoneGenerator < Rails::Generators::Base
 
   end
 
+  def generate_the_nav_partial
+
+  end
+
+  def add_nav_partial_to_layouts_folder
+
+  end
+
   def generate_user_model_file
 
   end
