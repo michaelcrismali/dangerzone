@@ -1,9 +1,5 @@
 class CreateAccountsController < ApplicationController
 
-  def new
-
-  end
-
   def create
     session[:email] = params[:user][:email]
     @user = User.new(params[:user])
@@ -42,6 +38,9 @@ class CreateAccountsController < ApplicationController
     else
       redirect_to signup_url
     end
+  end
+
+  def new
   end
 
 end
