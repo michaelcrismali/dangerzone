@@ -14,14 +14,14 @@ class SessionsController < ApplicationController
       @user.save
       redirect_to root_url, :notice => "Sign-in successful."
     else
-      redirect_to signin_url, :notice => "Sign-in unsuccessful."
+      redirect_to sign_in_url, :notice => "Sign-in unsuccessful."
     end
   end
 
   def destroy
     cookies.delete(:remember_token)
     reset_session
-    redirect_to signin_url
+    redirect_to sign_in_url
   end
 
   def new
