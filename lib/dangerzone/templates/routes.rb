@@ -4,7 +4,6 @@ APPNAME::Application.routes.draw do
   resources :sessions, :only => [ :create, :new ]
   get '/signin' => 'sessions#new', :as => 'signin'
   delete '/sign-out' => 'sessions#destroy', :as => 'signout'
-  get '/welcome' => 'sessions#welcome', :as => 'welcome'
 
   resources :create_accounts, :only => [ :new, :create ]
   get '/signup' => 'create_accounts#new', :as => 'signup'

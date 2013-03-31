@@ -6,7 +6,7 @@ class CreateAccountsController < ApplicationController
 
   def create
     session[:email] = params[:user][:email]
-    @user = User.new(params[:user]) #change so it's a form_tag
+    @user = User.new(params[:user])
     @user.reset_password_sent_at = Time.now
     @user.reset_password_token = SecureRandom.urlsafe_base64
     if @user.save
@@ -38,7 +38,7 @@ class CreateAccountsController < ApplicationController
       @user.remember_token = SecureRandom.urlsafe_base64
       @user.save
       session[:email] = @user.email
-      redirect_to welcome_url
+      redirect_to root_url
     else
       redirect_to signup_url
     end
