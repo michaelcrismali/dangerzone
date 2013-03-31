@@ -4,7 +4,7 @@ class ResetPasswordsController < ApplicationController
   end
 
   def send_reset_password
-    @user = User.find_by_email(params[:email])
+    @user = User.find_by_email(params[:email].downcase)
     @user.reset_password_sent_at = Time.now
     @user.reset_password_token = SecureRandom.urlsafe_base64
     if @user.save

@@ -3,6 +3,7 @@ class CreateAccountsController < ApplicationController
   def create
     session[:email] = params[:user][:email]
     @user = User.new(params[:user])
+    @user.email = @user.email.downcase
     @user.reset_password_sent_at = Time.now
     @user.reset_password_token = SecureRandom.urlsafe_base64
     if @user.save
@@ -14,7 +15,7 @@ class CreateAccountsController < ApplicationController
   end
 
   def resend_confirmation_email
-    @user = User.find_by_email(params[:email])
+    @user = User.find_by_email(params[:email].downcase)
     if @user && !@user.confirmed
       @user.reset_password_sent_at = Time.now
       @user.reset_password_token = SecureRandom.urlsafe_base64
