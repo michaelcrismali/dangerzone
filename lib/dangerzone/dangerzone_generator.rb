@@ -6,45 +6,70 @@ class DangerzoneGenerator < Rails::Generators::Base
     routes = IO.read('routes.rb')
     line = "::Application.routes.draw do"
     gsub_file 'config/routes.rb', /.+(#{Regexp.escape(line)})/mi do |match|
-    "#{match}\n  #{routes}"
+    "#{match}\n  #{routes}\n"
     end
   end
 
   def generate_the_users_migration_file
-
+    copy_file "migration.rb", "app/views/create_accounts/#{Time.now}create_users_table_via_dangerzone.rb"
   end
 
   def generate_the_nav_partial
-
+    copy_file "views/nav.html.erb", "app/views/layouts/dangerzone_nav.html.erb"
   end
 
-  def add_nav_partial_to_layouts_folder
-
+  def add_nav_partial_to_application_html_erb
+    nav = "<%= render 'dangerzone_nav' %>"
+    line = "<body>"
+    gsub_file 'app/views/layouts/application.html.erb', /(#{Regexp.escape(line)})/mi do |match|
+      "#{match}\n #{nav}\n"
+    end
   end
 
   def generate_user_model_file
-
+    copy_file "models/user.rb", "app/models/user.rb"
   end
 
-  def generate_the_controller
-
+  def generate_the_controllers
+    copy_file "controllers/create_accounts_controller.rb", "app/controllers/create_accounts_controller.rb"
+    copy_file "controllers/reset_passwords_controller.rb", "app/controllers/reset_passwords_controller.rb"
+    copy_file "controllers/sessions_controller.rb", "app/controllers/sessions_controller.rb"
   end
 
   def add_methods_to_application_controller
-
+    app_controller_methods = IO.read('controllers/application_controller.rb')
+    line = "protect_from_forgery"
+    gsub_file 'config/routes.rb', /.+(#{Regexp.escape(line)})/mi do |match|
+      "#{match}\n  #{app_controller_methods}\n"
+    end
   end
 
   def generate_mailer
-
+    copy_file "mailers/dangerzone_mailer.rb", "app/mailers/dangerzone_mailer.rb"
   end
 
   def generate_view_directories
-    empty_directory "app/views/dangerzone"
+    empty_directory "app/views/create_accounts"
     empty_directory "app/views/dangerzone_mailer"
+    empty_directory "app/views/reset_passwords"
+    empty_directory "app/views/sessions"
   end
 
   def fill_view_directories
-    copy_file "signin.html.erb", "app/views/create_accounts/signin.html.erb"
+    copy_file "views/create_accounts/check_your_email.html.erb", "app/views/create_accounts/check_your_email.html.erb"
+    copy_file "views/create_accounts/new.html.erb", "app/views/create_accounts/new.html.erb"
+
+    copy_file "views/dangerzone_mailer/account_confirmation_email.html.erb", "app/views/dangerzone_mailer/account_confirmation_email.html.erb"
+    copy_file "views/dangerzone_mailer/account_confirmation_email.text.erb", "app/views/dangerzone_mailer/account_confirmation_email.text.erb"
+    copy_file "views/dangerzone_mailer/reset_password_email.html.erb", "app/views/dangerzone_mailer/reset_password_email.html.erb"
+    copy_file "views/dangerzone_mailer/reset_password_email.text.erb", "app/views/dangerzone_mailer/reset_password_email.text.erb"
+
+    copy_file "views/reset_passwords/_form.html.erb", "app/views/reset_passwords/_form.html.erb"
+    copy_file "views/reset_passwords/new.html.erb", "app/views/reset_passwords/new.html.erb"
+    copy_file "views/reset_passwords/reset_password_form.html.erb", "app/views/reset_passwords/reset_password_form.html.erb"
+    copy_file "views/reset_passwords/send_reset_password.html.erb", "app/views/reset_passwords/send_reset_password.html.erb"
+
+    copy_file "views/sessions/new.html.erb", "app/views/sessions/new.html.erb"
   end
 
   private
