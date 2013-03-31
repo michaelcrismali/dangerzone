@@ -1,17 +1,18 @@
+require 'rails/generators'
 class DangerzoneGenerator < Rails::Generators::Base
 
   source_root File.expand_path('../templates', __FILE__)
 
   def edit_the_routes_file
-    routes = IO.read('routes.rb')
+    routes = IO.read(get_directory + '/templates/routes.rb')
     line = "::Application.routes.draw do"
     gsub_file 'config/routes.rb', /.+(#{Regexp.escape(line)})/mi do |match|
-    "#{match}\n  #{routes}\n"
+    "#{match}\n\n#{routes}\n"
     end
   end
 
   def generate_the_users_migration_file
-    copy_file "migration.rb", "app/views/create_accounts/#{Time.now}create_users_table_via_dangerzone.rb"
+    copy_file "migration.rb", "db/migrate/#{Time.now.utc.strftime('%Y%m%d%H%M%S')}_create_users_table_via_dangerzone.rb"
   end
 
   def generate_the_nav_partial
@@ -22,7 +23,7 @@ class DangerzoneGenerator < Rails::Generators::Base
     nav = "<%= render 'dangerzone_nav' %>"
     line = "<body>"
     gsub_file 'app/views/layouts/application.html.erb', /(#{Regexp.escape(line)})/mi do |match|
-      "#{match}\n #{nav}\n"
+      "#{match}\n#{nav}\n"
     end
   end
 
@@ -37,10 +38,10 @@ class DangerzoneGenerator < Rails::Generators::Base
   end
 
   def add_methods_to_application_controller
-    app_controller_methods = IO.read('controllers/application_controller.rb')
+    app_controller_methods = IO.read(get_directory + '/templates/controllers/application_controller.rb')
     line = "protect_from_forgery"
-    gsub_file 'config/routes.rb', /.+(#{Regexp.escape(line)})/mi do |match|
-      "#{match}\n  #{app_controller_methods}\n"
+    gsub_file 'app/controllers/application_controller.rb', /.+(#{Regexp.escape(line)})/mi do |match|
+      "#{match}\n\n#{app_controller_methods}\n"
     end
   end
 
@@ -75,9 +76,15 @@ class DangerzoneGenerator < Rails::Generators::Base
   private
 
   def gsub_file(relative_destination, regexp, *args, &block)
-    path = destination_path(relative_destination)
+    path = relative_destination
     content = File.read(path).gsub(regexp, *args, &block)
     File.open(path, 'wb') { |file| file.write(content) }
+  end
+
+  def get_directory
+    directory = __FILE__.split('/')
+    directory.pop
+    directory.join('/')
   end
 
 end
