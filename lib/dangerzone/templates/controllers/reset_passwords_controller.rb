@@ -8,7 +8,7 @@ class ResetPasswordsController < ApplicationController
     @user.reset_password_sent_at = Time.now
     @user.reset_password_token = SecureRandom.urlsafe_base64
     if @user.save
-      UserMailer.reset_password_email(@user).deliver
+      DangerzoneMailer.reset_password_email(@user).deliver
     else
       redirect_to forgot_password_url
     end
