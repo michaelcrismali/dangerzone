@@ -1,0 +1,11 @@
+<div>
+  <h1>Check your email for an account confirmation email.</h1>
+  <br />
+  <h2>(Didn't get one? Enter your email address and we'll send you a fresh one.</h2>
+  <br />
+  <%= form_tag(resend_confirmation_email_url, method: 'put') do %>
+
+    <%= email_field_tag :email, nil, placeholder: 'Email' %>
+    <%= submit_tag %>
+  <% end -%>
+</div>
