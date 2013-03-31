@@ -1,6 +1,3 @@
-APPNAME::Application.routes.draw do
-#find this ^ and draw in the stuff below
-
   post '/sessions' => 'sessions#create', as: 'sessions'
   get '/signin' => 'sessions#new', as: 'sign_in'
   delete '/sign-out' => 'sessions#destroy', as: 'sign_out'
@@ -15,5 +12,3 @@ APPNAME::Application.routes.draw do
   put '/reset_password' => 'reset_passwords#send_reset_password', as: 'send_reset_password'
   get '/reset_password/:id/:reset_password_token' => 'reset_passwords#reset_password_form', as: 'reset_password_form'
   put '/update_password' => 'reset_passwords#update_password', as: 'update_password'
-
-end
