@@ -9,15 +9,4 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email
   validates_format_of :email, :with => /.+@.+\..+/i
 
-  def sign_in(remote_ip_from_request)
-    @user.sign_in_ip = remote_ip_from_request
-    @user.sign_in_count = @user.sign_in_count + 1
-    @user.save
-  end
-
-  def remember_me
-    @user.remember_token = SecureRandom.urlsafe_base64
-    @user.save
-  end
-
 end
