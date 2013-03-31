@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_user
-    redirect_to signup_url if current_user.nil?
+    redirect_to sign_in_url if current_user.nil?
   end
 
 end
