@@ -1,10 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
-  # the before filter belongs in any controller your users
-  # need to be logged in to access
-  # before_filter :authorize_user
-
   def current_user
     @current_user = User.find_by_remember_token(cookies[:remember_token])
     @current_user ||= User.find_by_id(session[:user_id])
