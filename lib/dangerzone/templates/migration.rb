@@ -1,4 +1,4 @@
-class CreateUsersTable < ActiveRecord::Migration
+class CreateUsersTableViaDangerzone < ActiveRecord::Migration
 
   def up
     create_table :users do |t|
