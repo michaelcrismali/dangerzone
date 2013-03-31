@@ -3,14 +3,14 @@ class DangerzoneGenerator < Rails::Generators::Base
   source_root File.expand_path('../templates', __FILE__)
 
   def edit_the_routes_file
-    gsub_file('config/routes.rb')
+    routes = IO.read('routes.rb')
     line = "::Application.routes.draw do"
-    gsub_file 'config/routes.rb', /(#{Regexp.escape(line)})/mi do |match|
-    " #{match}\n  has_many :tags\n"
+    gsub_file 'config/routes.rb', /.+(#{Regexp.escape(line)})/mi do |match|
+    "#{match}\n  #{routes}"
     end
   end
 
-  def generate_the_models_migration_file
+  def generate_the_users_migration_file
 
   end
 
