@@ -16,18 +16,16 @@ class SessionsController < ApplicationController
     end
   end
 
-  def new
-
-  end
-
-  def welcome
-
-  end
-
   def destroy
     cookies.delete(:remember_token)
     reset_session
     redirect_to signin_url
+  end
+
+  def new
+  end
+
+  def welcome
   end
 
 end
