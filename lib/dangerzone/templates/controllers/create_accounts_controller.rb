@@ -6,6 +6,7 @@ class CreateAccountsController < ApplicationController
     @user.email = @user.email.downcase
     @user.reset_password_sent_at = Time.now
     @user.reset_password_token = SecureRandom.urlsafe_base64
+    @user.remember_token = SecureRandom.urlsafe_base64
     if @user.save
       DangerzoneMailer.account_confirmation_email(@user).deliver
       redirect_to check_your_email_url
@@ -33,7 +34,6 @@ class CreateAccountsController < ApplicationController
       @user.reset_password_sent_at = nil
       @user.reset_password_token = nil
       @user.sign_in_ip = request.remote_ip
-      @user.sign_in_count = 1
       @user.save
       session[:user_id] = @user.id
       redirect_to root_url
