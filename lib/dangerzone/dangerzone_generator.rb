@@ -3,7 +3,7 @@ class DangerzoneGenerator < Rails::Generators::Base
 
   source_root File.expand_path('../templates', __FILE__)
 
-  # add this config.action_mailer.default_url_options = { :host => 'localhost' } to environment.rb?
+  # add this config.action_mailer.default_url_options = { :host => 'localhost:3000' } to development.rb
 
   def edit_the_routes_file
     routes = IO.read(get_directory + '/templates/routes.rb')
