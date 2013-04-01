@@ -11,6 +11,10 @@ class DangerzoneGenerator < Rails::Generators::Base
     end
   end
 
+  def get_rid_of_rails_default_index_page_in_index
+    remove_file "public/index.html"
+  end
+
   def generate_the_nav_partial
     copy_file "views/nav.html.erb", "app/views/layouts/_dangerzone_nav.html.erb"
   end
