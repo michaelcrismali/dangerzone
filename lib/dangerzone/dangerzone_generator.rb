@@ -45,8 +45,6 @@ class DangerzoneGenerator < Rails::Generators::Base
     copy_file "mailers/dangerzone_mailer.rb", "app/mailers/dangerzone_mailer.rb"
   end
 
-# add this config.action_mailer.default_url_options = { :host => 'localhost:3000' } to development.rb
-
   def add_mailer_config_to_development
     comment = "# Via dangerzone: configures actionmailer to use localhost:3000 as its default url"
     config_stuff = "config.action_mailer.default_url_options = { :host => 'localhost:3000' }"
