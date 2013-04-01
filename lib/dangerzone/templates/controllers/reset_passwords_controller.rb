@@ -4,9 +4,9 @@ class ResetPasswordsController < ApplicationController
     @user = User.find_by_email(params[:email].downcase)
     if @user.update_reset_password_credentials
       DangerzoneMailer.reset_password_email(@user).deliver
-      redirect_to forgot_password_url, notice: "Resending password reset email successful."
+      redirect_to forgot_password_url, notice: "Reset password email successfully sent."
     else
-      redirect_to forgot_password_url, notice: "Resending password reset email unsuccessful."
+      redirect_to forgot_password_url, notice: "Reset password email failed to send."
     end
   end
 
