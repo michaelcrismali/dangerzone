@@ -32,9 +32,10 @@ class CreateAccountsController < ApplicationController
       @user.confirmed = true
       @user.reset_password_sent_at = nil
       @user.reset_password_token = nil
-      @user.remember_token = SecureRandom.urlsafe_base64
+      @user.sign_in_ip = request.remote_ip
+      @user.sign_in_count = 1
       @user.save
-      session[:email] = @user.email
+      session[:user_id] = @user.id
       redirect_to root_url
     else
       redirect_to sign_up_url
