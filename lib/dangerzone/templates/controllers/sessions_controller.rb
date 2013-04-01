@@ -21,7 +21,7 @@ class SessionsController < ApplicationController
   def destroy
     cookies.delete(:remember_token)
     reset_session
-    redirect_to sign_in_url
+    redirect_to sign_in_url, :notice => "Sign-out successful."
   end
 
   def new

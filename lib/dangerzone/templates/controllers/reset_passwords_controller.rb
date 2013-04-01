@@ -4,8 +4,9 @@ class ResetPasswordsController < ApplicationController
     @user = User.find_by_email(params[:email].downcase)
     if @user.update_reset_password_credentials
       DangerzoneMailer.reset_password_email(@user).deliver
+      redirect_to forgot_password_url, notice: "Resending password reset email successful."
     else
-      redirect_to forgot_password_url
+      redirect_to forgot_password_url, notice: "Resending password reset email unsuccessful."
     end
   end
 
@@ -14,7 +15,7 @@ class ResetPasswordsController < ApplicationController
     if @user && (Time.now - @user.reset_password_sent_at) < 60.minutes && @user.reset_password_token == params[:reset_password_token]
       session[:reset_password_user_id] = @user.id
     else
-      redirect_to forgot_password_url
+      redirect_to forgot_password_url, notice: "There was a problem, try having the email resent to you."
     end
   end
 
@@ -27,12 +28,12 @@ class ResetPasswordsController < ApplicationController
       if @user.save
         reset_session
         session[:user_id] = @user.id
-        redirect_to root_url
+        redirect_to root_url, notice: "Password successfully updated."
       else
-        redirect_to send_reset_password_url
+        redirect_to send_reset_password_url, notice: "Update password unsuccessful."
       end
     else
-      redirect_to send_reset_password_url
+      redirect_to send_reset_password_url, notice: "Update password unsuccessful."
     end
   end
 

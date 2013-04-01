@@ -7,9 +7,9 @@ class CreateAccountsController < ApplicationController
     @user.remember_token = SecureRandom.urlsafe_base64
     if @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
-      redirect_to check_your_email_url
+      redirect_to check_your_email_url, notice: "Registration successful."
     else
-      render sign_up_url
+      redirect_to sign_up_url, notice: "Registration unsuccessful"
     end
   end
 
@@ -19,7 +19,7 @@ class CreateAccountsController < ApplicationController
       @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
     end
-    redirect_to check_your_email_url
+    redirect_to check_your_email_url, notice: "Resent confirmation email."
   end
 
   def confirm
@@ -28,9 +28,9 @@ class CreateAccountsController < ApplicationController
       reset_session
       @user.confirm(request.remote_ip)
       session[:user_id] = @user.id
-      redirect_to root_url
+      redirect_to root_url, notice: "User confirmation successful."
     else
-      redirect_to sign_up_url
+      redirect_to sign_up_url, notice: "User confirmation unsuccessful."
     end
   end
 
