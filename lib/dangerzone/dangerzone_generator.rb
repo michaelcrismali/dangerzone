@@ -83,10 +83,8 @@ class DangerzoneGenerator < Rails::Generators::Base
     copy_file "views/dangerzone_mailer/reset_password_email.html.erb", "app/views/dangerzone_mailer/reset_password_email.html.erb"
     copy_file "views/dangerzone_mailer/reset_password_email.text.erb", "app/views/dangerzone_mailer/reset_password_email.text.erb"
 
-    copy_file "views/reset_passwords/_form.html.erb", "app/views/reset_passwords/_form.html.erb"
     copy_file "views/reset_passwords/new.html.erb", "app/views/reset_passwords/new.html.erb"
     copy_file "views/reset_passwords/reset_password_form.html.erb", "app/views/reset_passwords/reset_password_form.html.erb"
-    copy_file "views/reset_passwords/send_reset_password.html.erb", "app/views/reset_passwords/send_reset_password.html.erb"
 
     copy_file "views/sessions/new.html.erb", "app/views/sessions/new.html.erb"
   end
