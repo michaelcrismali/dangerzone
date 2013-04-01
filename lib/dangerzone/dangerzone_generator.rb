@@ -64,6 +64,7 @@ class DangerzoneGenerator < Rails::Generators::Base
   def fill_view_directories
     copy_file "views/create_accounts/check_your_email.html.erb", "app/views/create_accounts/check_your_email.html.erb"
     copy_file "views/create_accounts/new.html.erb", "app/views/create_accounts/new.html.erb"
+    copy_file "views/create_accounts/dangerzone.html.erb", "app/views/create_accounts/dangerzone.html.erb"
 
     copy_file "views/dangerzone_mailer/account_confirmation_email.html.erb", "app/views/dangerzone_mailer/account_confirmation_email.html.erb"
     copy_file "views/dangerzone_mailer/account_confirmation_email.text.erb", "app/views/dangerzone_mailer/account_confirmation_email.text.erb"

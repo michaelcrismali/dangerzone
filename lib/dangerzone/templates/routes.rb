@@ -1,3 +1,7 @@
+  root to: 'create_accounts#dangerzone'
+
+  get '/dangerzone' => 'create_accounts#dangerzone', as: 'dangerzone'
+
   post '/sessions' => 'sessions#create', as: 'sessions'
   get '/signin' => 'sessions#new', as: 'sign_in'
   delete '/sign-out' => 'sessions#destroy', as: 'sign_out'
