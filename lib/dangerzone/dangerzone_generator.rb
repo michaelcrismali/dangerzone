@@ -57,7 +57,7 @@ class DangerzoneGenerator < Rails::Generators::Base
   def uncomment_bcrypt_in_gemfile
     uncommented = "gem 'bcrypt-ruby'"
     line = "# gem 'bcrypt-ruby'"
-    gsub_file 'Gemfile', /.+(#{Regexp.escape(line)})/mi do |match|
+    gsub_file 'Gemfile', /(#{Regexp.escape(line)})/mi do |match|
       "#{uncommented}"
     end
   end
