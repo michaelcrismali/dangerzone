@@ -9,17 +9,17 @@ class User < ActiveRecord::Base
   validates_format_of :email, :with => /.+@.+\..+/i
 
   def update_reset_password_credentials
-    @user.reset_password_sent_at = Time.now
-    @user.reset_password_token = SecureRandom.urlsafe_base64
-    @user.save
+    self.reset_password_sent_at = Time.now
+    self.reset_password_token = SecureRandom.urlsafe_base64
+    self.save
   end
 
   def confirm(request_remote_ip)
-    @user.confirmed = true
-    @user.reset_password_sent_at = nil
-    @user.reset_password_token = nil
-    @user.sign_in_ip = request_remote_ip
-    @user.save
+    self.confirmed = true
+    self.reset_password_sent_at = nil
+    self.reset_password_token = nil
+    self.sign_in_ip = request_remote_ip
+    self.save
   end
 
 end
