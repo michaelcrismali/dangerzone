@@ -20,7 +20,7 @@ class DangerzoneGenerator < Rails::Generators::Base
   end
 
   def add_nav_partial_to_application_html_erb
-    nav = "<%= render 'layouts/dangerzone_nav' %>"
+    nav = "<%= render 'layouts/dangerzone_nav' %>\n\n<%= notice %>"
     line = "<body>"
     gsub_file 'app/views/layouts/application.html.erb', /(#{Regexp.escape(line)})/mi do |match|
       "#{match}\n#{nav}\n"
