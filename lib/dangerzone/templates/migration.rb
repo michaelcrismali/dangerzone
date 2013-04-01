@@ -7,6 +7,7 @@ class CreateUsersTableViaDangerzone < ActiveRecord::Migration
       t.string   :password_confirmation
       t.string   :password_digest
       t.string   :sign_in_ip
+      t.string   :remember_token
       t.string   :reset_password_token
       t.datetime :reset_password_sent_at
       t.boolean  :confirmed,              :default => false
