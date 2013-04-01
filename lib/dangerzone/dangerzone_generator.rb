@@ -50,9 +50,9 @@ class DangerzoneGenerator < Rails::Generators::Base
   def add_mailer_config_to_development
     comment = "# Via dangerzone: configures actionmailer to use localhost:3000 as its default url"
     config_stuff = "config.action_mailer.default_url_options = { :host => 'localhost:3000' }"
-    line = "\nend"
-    gsub_file 'app/controllers/application_controller.rb', /.+(#{Regexp.escape(line)})/mi do |match|
-      "\n  #{comment}\n\n  #{config_stuff}\n#{match}"
+    line = "config.assets.debug = true"
+    gsub_file 'config/environments/development.rb', /.+(#{Regexp.escape(line)})/mi do |match|
+      "#{match}\n\n  #{comment}\n  #{config_stuff}\n\n"
     end
   end
 
