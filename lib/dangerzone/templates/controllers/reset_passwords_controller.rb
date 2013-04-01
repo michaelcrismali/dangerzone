@@ -1,13 +1,8 @@
 class ResetPasswordsController < ApplicationController
 
-  def new
-  end
-
   def send_reset_password
     @user = User.find_by_email(params[:email].downcase)
-    @user.reset_password_sent_at = Time.now
-    @user.reset_password_token = SecureRandom.urlsafe_base64
-    if @user.save
+    if @user.update_reset_password_credentials
       DangerzoneMailer.reset_password_email(@user).deliver
     else
       redirect_to forgot_password_url
@@ -39,6 +34,9 @@ class ResetPasswordsController < ApplicationController
     else
       redirect_to send_reset_password_url
     end
+  end
+
+  def new
   end
 
 end
