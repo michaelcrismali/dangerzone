@@ -3,8 +3,6 @@ class DangerzoneGenerator < Rails::Generators::Base
 
   source_root File.expand_path('../templates', __FILE__)
 
-  # add this config.action_mailer.default_url_options = { :host => 'localhost:3000' } to development.rb
-
   def edit_the_routes_file
     routes = IO.read(get_directory + '/templates/routes.rb')
     line = "::Application.routes.draw do"
@@ -45,6 +43,17 @@ class DangerzoneGenerator < Rails::Generators::Base
 
   def generate_mailer
     copy_file "mailers/dangerzone_mailer.rb", "app/mailers/dangerzone_mailer.rb"
+  end
+
+# add this config.action_mailer.default_url_options = { :host => 'localhost:3000' } to development.rb
+
+  def add_mailer_config_to_development
+    comment = "# Via dangerzone: configures actionmailer to use localhost:3000 as its default url"
+    config_stuff = "config.action_mailer.default_url_options = { :host => 'localhost:3000' }"
+    line = "\nend"
+    gsub_file 'app/controllers/application_controller.rb', /.+(#{Regexp.escape(line)})/mi do |match|
+      "\n  #{comment}\n\n  #{config_stuff}\n#{match}"
+    end
   end
 
   def generate_view_directories
