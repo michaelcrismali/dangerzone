@@ -26,7 +26,7 @@ class CreateAccountsController < ApplicationController
 
   def confirm
     @user = User.find_by_id(params[:id])
-    if @user && (Time.now - @user.reset_password_sent_at) < 60.minutes && @user.reset_password_token == params[:reset_password_token]
+    if @user && @user.has_token_and_is_in_time(params[:reset_password_token])
       reset_session
       @user.confirm(request.remote_ip)
       session[:user_id] = @user.id

@@ -22,4 +22,8 @@ class User < ActiveRecord::Base
     self.save
   end
 
+  def has_token_and_is_in_time(token)
+    (Time.now - self.reset_password_sent_at) < 60.minutes && self.reset_password_token == token
+  end
+
 end

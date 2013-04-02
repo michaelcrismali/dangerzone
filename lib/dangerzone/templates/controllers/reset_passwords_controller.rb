@@ -12,7 +12,7 @@ class ResetPasswordsController < ApplicationController
 
   def reset_password_form
     @user = User.find_by_id(params[:id])
-    if @user && (Time.now - @user.reset_password_sent_at) < 60.minutes && @user.reset_password_token == params[:reset_password_token]
+    if @user && @user.has_token_and_is_in_time(params[:reset_password_token])
       session[:reset_password_user_id] = @user.id
     else
       redirect_to forgot_password_url, notice: "There was a problem, try having the email resent to you."
