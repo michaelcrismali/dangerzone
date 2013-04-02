@@ -50,7 +50,7 @@ Then run this command from your app's root directory:
 rails generate dangerzone
 ```
 
-You can also put '```ruby g ```'' instead of '```ruby generate ```' if you're really in a hurry. Anyway, you should see something that
+You can also put '```g```'' instead of '```generate```' if you're really in a hurry. Anyway, you should see something that
 looks like this:
 
 ```ruby
@@ -65,7 +65,7 @@ looks like this:
       [etc...]
 ```
 
-Now, if you're in a fresh app, all you really have to do is ```ruby rake db:migrate ```
+Now, if you're in a fresh app, all you really have to do is ```rake db:migrate```
 
 Note: If you're adding Dangerzone to an existing app then things can be a bit more tricky. For instance,
 if you've changed your code in certain places Dangerzone may not edit the files correctly. It may
