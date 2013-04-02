@@ -112,6 +112,9 @@ in addition to setting the @current\_user instance variable. The instance variab
 has authorize\_user run in the before filter.
 * Dangerzone deletes index.html from your app's public folder.
 * The pages and emails that Dangerzone generates for you are pretty bare bones, so you'll probably want to style them
+* If you actually use Dangerzone code in production, remember that the email address validation is basic so
+every once in a while you should probably destroy all of the accounts that are reasonably old and are unconfirmed.
+Or set up an automated task that does that.
 
 ### Files Dangerzone Edits
 * app/controllers/application\_controller.rb - adds authorize\_user and current\_user methods (so every controller
