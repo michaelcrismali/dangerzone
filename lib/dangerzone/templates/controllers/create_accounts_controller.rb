@@ -18,8 +18,10 @@ class CreateAccountsController < ApplicationController
     if @user && !@user.confirmed
       @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
+      redirect_to check_your_email_url, notice: "Resent confirmation email."
+    else
+      redirect_to check_your_email_url, notice: "Something went wrong."
     end
-    redirect_to check_your_email_url, notice: "Resent confirmation email."
   end
 
   def confirm
