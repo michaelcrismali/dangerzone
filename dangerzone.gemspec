@@ -1,18 +1,18 @@
 Gem::Specification.new do |s|
   s.name        = "dangerzone"
   s.version     = '0.0.0'
-  s.date        = '2013-03-30'
+  s.date        = '2013-04-02'
   s.license     = "MIT"
   s.summary     = "Takes care of creating accounts, login, logout, forgot password, etc. in Rails"
   s.email       = "michael.crismali@gmail.com"
   s.homepage    = "https://github.com/michaelcrismali/dangerzone"
   s.authors     = ['Michael Crismali']
-  s.description = "Generates a sign-in, sign-out, create account, forgot password, account confirmation systems for Rails apps. It's Devise for beginners."
+  s.description = "Generates sign-in, sign-out, create account, forgot password, and account confirmation systems for Rails apps. It's pretty much Devise for beginners."
 
   s.files         = `git ls-files`.split("\n")
   s.require_paths = ["lib"]
 
   s.add_dependency("bcrypt-ruby", "~> 3.0")
   s.add_dependency("rails", "~> 3.2")
-  s.add_dependency("thor")
+  s.add_dependency("thor", "~> 0.18.1")
 end
