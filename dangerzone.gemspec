@@ -7,6 +7,7 @@ Gem::Specification.new do |s|
   s.email       = "michael.crismali@gmail.com"
   s.homepage    = "https://github.com/michaelcrismali/dangerzone"
   s.authors     = ['Michael Crismali']
+  s.description = "Generates a sign-in, sign-out, create account, forgot password, account confirmation systems for Rails apps. It's Devise for beginners."
 
   s.files         = `git ls-files`.split("\n")
   s.require_paths = ["lib"]
