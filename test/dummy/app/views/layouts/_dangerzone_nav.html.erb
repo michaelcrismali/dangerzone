@@ -1,0 +1,10 @@
+<% if @current_user.present? %>
+  <nav>
+    <%= link_to "Sign-out", sign_out_url, :method => 'delete' %>
+  </nav>
+<% else %>
+  <nav>
+    <%= link_to "Sign up", sign_up_url %>
+    <%= link_to "Sign in", sign_in_url %>
+  </nav>
+<% end %>
