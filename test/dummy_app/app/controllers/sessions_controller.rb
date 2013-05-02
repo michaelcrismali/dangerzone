@@ -18,11 +18,6 @@ class SessionsController < ApplicationController
     end
   end
 
-  def omniauth
-    # fb and twitter authentification stuff go here
-    # auth = request.env["omniauth.auth"]
-  end
-
   def destroy
     cookies.delete(:remember_token)
     reset_session
