@@ -13,11 +13,11 @@ out by hand but don't want to use Devise for whatever reason (ie those with some
 don't understand Devise)
 
 ## Dependencies
-You'll need these gems (and the gems that they depend on) to use Dangerzone:
+You'll need these gems (and their dependencies) to use Dangerzone:
 
 * Rails 3.2
 * Bcrypt-ruby 3.0
-* Thor
+
 
 ## How to install
 You can do one of these in your command line (if you have the RubyGems command line stuff installed):
@@ -32,7 +32,7 @@ Alternatively, you can just add this to your app's GemFile:
 gem 'dangerzone'
 ```
 
-And then bundle or bundle install.
+And then ```bundle``` or ```bundle install```.
 
 ## How to use
 
