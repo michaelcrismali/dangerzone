@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency('bcrypt-ruby', '~> 3.0')
   s.add_dependency('rails', '~> 3.2')
-  s.add_dependency('rspec-rails', '~> 2.13.1')
-  s.add_dependency('capybara', '~> 2.1.0')
-  s.add_dependency('factory_girl_rails', '~> 4.2.1')
+  s.add_development_dependency('rspec-rails', '~> 2.13.1')
+  s.add_development_dependency('capybara', '~> 2.1.0')
+  s.add_development_dependency('factory_girl_rails', '~> 4.2.1')
 end
