@@ -1,0 +1,11 @@
+<div>
+  <%= form_for(User.new, :url => create_accounts_url, :method => :post) do |f| %>
+    <%= label_tag :email %>
+    <%= f.email_field :email, :placeholder => "Email", value: session[:email] %>
+    <%= label_tag :password %>
+    <%= f.password_field :password, :placeholder => "Password" %>
+    <%= label_tag :password_confirmation %>
+    <%= f.password_field :password_confirmation, :placeholder => "Confirm Password" %>
+    <%= f.submit "Sign Up" %>
+  <% end %>
+</div>
