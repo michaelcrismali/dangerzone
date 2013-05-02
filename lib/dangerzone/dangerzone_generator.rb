@@ -58,14 +58,6 @@ class DangerzoneGenerator < Rails::Generators::Base
     end
   end
 
-  def uncomment_bcrypt_in_gemfile
-    uncommented = "gem 'bcrypt-ruby'"
-    line = "# gem 'bcrypt-ruby'"
-    gsub_file 'Gemfile', /(#{Regexp.escape(line)})/mi do |match|
-      "#{uncommented}"
-    end
-  end
-
   def generate_view_directories
     empty_directory "app/views/create_accounts"
     empty_directory "app/views/dangerzone_mailer"
