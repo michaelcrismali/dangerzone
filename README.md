@@ -18,6 +18,12 @@ You'll need these gems (and their dependencies) to use Dangerzone:
 * Rails 3.2
 * Bcrypt-ruby 3.0
 
+You'll need these gems when developing
+
+* Rspec-rails 2.13.1
+* Capybara 2.1.0
+* Factory_Girl_Rails 4.2.1
+
 
 ## How to install
 You can do one of these in your command line (if you have the RubyGems command line stuff installed):
