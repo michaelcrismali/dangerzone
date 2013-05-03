@@ -30,7 +30,7 @@ describe SessionsController do
   end
 
   describe '#create' do
-    let(:user){ FactoryGirl.create(:confirmed_user) }
+    let(:user){ FactoryGirl.create(:user, :confirmed) }
     let(:params){ {email: user.email, password: 'password1234', remember_me: '0'} }
     before do
       session[:user_id] = nil
@@ -54,7 +54,7 @@ describe SessionsController do
 
     context "user is not confirmed" do
       it "redirects to the sign in page" do
-        unconfirmed_user = FactoryGirl.create(:user)
+        unconfirmed_user = FactoryGirl.create(:user, email: 'email@example.com')
         params[:email] = unconfirmed_user.email
         post :create, params
         expect(response).to redirect_to :sign_in

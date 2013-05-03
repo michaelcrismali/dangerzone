@@ -80,7 +80,7 @@ describe CreateAccountsController do
       it "updates the user's reset password credentials" do
         old_token = user.reset_password_token
         old_time = user.reset_password_sent_at
-        put :resend_confirmation_email, email: 'pun@example.com'
+        put :resend_confirmation_email, email: user.email
         expect(User.first.reset_password_token).to_not eq(old_token)
         expect(User.first.reset_password_sent_at).to_not eq(old_time)
       end
