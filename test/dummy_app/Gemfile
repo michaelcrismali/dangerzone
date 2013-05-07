@@ -11,6 +11,7 @@ group :test, :development do
   gem 'rspec-rails'
   gem 'capybara'
   gem 'factory_girl_rails'
+  gem 'debugger'
 end
 
 # Gems used only for assets and not required

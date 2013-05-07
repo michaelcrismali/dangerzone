@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
 
   def create
-    @user = User.find_by_email(params[:email].downcase) if params[:email]
+    @user = User.find_by_email(params[:email].try(:downcase)) if params[:email]
     if @user && @user.authenticate(params[:password]) && @user.confirmed
       @user.sign_in_ip = request.remote_ip
       @user.sign_in_count = @user.sign_in_count + 1

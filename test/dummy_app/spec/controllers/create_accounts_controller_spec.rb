@@ -2,14 +2,14 @@ require 'spec_helper'
 
 describe CreateAccountsController do
 
-  describe '#create' do
+  before { ActionMailer::Base.deliveries = []}
 
-    before(:each) { ActionMailer::Base.deliveries = []}
+  describe '#create' do
 
     describe 'when successful' do
 
-      before(:each) { post :create, params }
       let(:params) { { user: FactoryGirl.attributes_for(:user) } }
+      before { post :create, params }
 
       it "assigns a user with the values in params" do
         expect(assigns(:user)).to eq(User.first)
@@ -27,7 +27,7 @@ describe CreateAccountsController do
         expect(assigns(:user)).to_not be_new_record
       end
 
-      it "redirect them to check_your_email" do
+      it "redirects them to check_your_email" do
         expect(response).to redirect_to :check_your_email
       end
     end
@@ -62,11 +62,10 @@ describe CreateAccountsController do
 
   describe '#resend_confirmation_email' do
 
-    before(:each) { ActionMailer::Base.deliveries = []}
     let(:user){ FactoryGirl.create(:user) }
 
     it "redirects to the check_your_email page" do
-      put :resend_confirmation_email, email: 'pun@example.com'
+      put :resend_confirmation_email
       expect(response).to redirect_to :check_your_email
     end
 
@@ -87,16 +86,16 @@ describe CreateAccountsController do
     end
 
     describe "when user is already confirmed" do
-      let(:confirmed_user) { FactoryGirl.create(:confirmed_user) }
-      before { put :resend_confirmation_email, email: 'pun_2@example.com' }
+      let(:confirmed_user) { FactoryGirl.create(:user, :confirmed) }
 
       it "does not send an email" do
+        put :resend_confirmation_email, email: confirmed_user.email
         expect(ActionMailer::Base.deliveries).to be_empty
       end
 
       it "does not update their reset password credentials" do
         user.should_not_receive :update_reset_password_credentials
-        put :resend_confirmation_email, email: 'pun_2@example.com'
+        put :resend_confirmation_email, email: confirmed_user.email
       end
     end
 

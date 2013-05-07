@@ -12,7 +12,7 @@ describe User do
 
     it "is unique" do
       user.save
-      user2 = FactoryGirl.build(:user)
+      user2 = FactoryGirl.build(:user, email: user.email)
       expect(user2).to_not be_valid
     end
 

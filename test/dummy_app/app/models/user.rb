@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
   validates_format_of :email, :with => /.+@.+\..+/i
 
   before_save do
-    self.email = self.email.downcase
+    self.email = self.email.try(:downcase)
   end
 
   def update_reset_password_credentials

@@ -1,7 +1,7 @@
 class ResetPasswordsController < ApplicationController
 
   def send_reset_password
-    @user = User.find_by_email(params[:email].downcase)
+    @user = User.find_by_email(params[:email].try(:downcase))
     if @user
       @user.update_reset_password_credentials
       DangerzoneMailer.reset_password_email(@user).deliver
@@ -13,7 +13,7 @@ class ResetPasswordsController < ApplicationController
 
   def reset_password_form
     @user = User.find_by_id(params[:id])
-    if @user && (Time.now - @user.reset_password_sent_at) < 60.minutes && @user.reset_password_token == params[:reset_password_token]
+    if @user && (Time.now - @user.reset_password_sent_at) < 24.hours && @user.reset_password_token == params[:reset_password_token]
       session[:reset_password_user_id] = @user.id
     else
       redirect_to forgot_password_url, notice: "There was a problem, try having the email resent to you."
@@ -22,7 +22,7 @@ class ResetPasswordsController < ApplicationController
 
   def update_password
     @user = User.find_by_id(session[:reset_password_user_id])
-    if @user && (Time.now - @user.reset_password_sent_at) < 60.minutes
+    if @user && (Time.now - @user.reset_password_sent_at) < 24.hours
       @user.password = params[:password]
       @user.password_confirmation = params[:password_confirmation]
       if @user.save

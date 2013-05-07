@@ -32,12 +32,13 @@ describe SessionsController do
   describe '#create' do
     let(:user){ FactoryGirl.create(:user, :confirmed) }
     let(:params){ {email: user.email, password: 'password1234', remember_me: '0'} }
+
     before do
       session[:user_id] = nil
-      cookies.delete(:remember_token)
+      controller.reset_session
     end
 
-    context "non user email tries to login" do
+    context "when a non user email tries to login" do
       it "redirects to the sign in page" do
         post :create
         expect(response).to redirect_to :sign_in

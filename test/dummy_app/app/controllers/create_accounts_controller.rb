@@ -13,7 +13,7 @@ class CreateAccountsController < ApplicationController
   end
 
   def resend_confirmation_email
-    @user = User.find_by_email(params[:email].downcase)
+    @user = User.find_by_email(params[:email].try(:downcase))
     if @user && !@user.confirmed
       @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
@@ -23,7 +23,7 @@ class CreateAccountsController < ApplicationController
 
   def confirm
     @user = User.find_by_id(params[:id])
-    if @user && (Time.now - @user.reset_password_sent_at) < 60.minutes && @user.reset_password_token == params[:reset_password_token]
+    if @user && (Time.now - @user.reset_password_sent_at) < 24.hours && @user.reset_password_token == params[:reset_password_token]
       reset_session
       @user.confirm(request.remote_ip)
       session[:user_id] = @user.id
