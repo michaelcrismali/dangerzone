@@ -21,7 +21,7 @@ class ResetPasswordsController < ApplicationController
 
   def update_password
     @user = User.find_by_id(session[:reset_password_user_id])
-    if @user && (Time.now - @user.reset_password_sent_at) < 60.minutes
+    if @user && (Time.now - @user.reset_password_sent_at) < 24.hours
       @user.password = params[:password]
       @user.password_confirmation = params[:password_confirmation]
       @user.reset_password_token = SecureRandom.urlsafe_base64
