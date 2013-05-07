@@ -6,6 +6,8 @@ class User < ActiveRecord::Base
 
   validates_presence_of :email
   validates_uniqueness_of :email
+  validates :password, :presence => true, :if => :new_record?
+  validates :password_confirmation, :presence => true, :if => :new_record?
   validates_format_of :email, :with => /.+@.+\..+/i
 
   before_save do
@@ -24,6 +26,14 @@ class User < ActiveRecord::Base
     self.reset_password_token = nil
     self.sign_in_ip = request_remote_ip
     self.save
+  end
+
+  def in_time?
+    (Time.now - self.reset_password_sent_at) < 24.hours
+  end
+
+  def token_matches?(token)
+    self.reset_password_token == token
   end
 
 end

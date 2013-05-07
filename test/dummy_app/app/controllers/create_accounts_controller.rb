@@ -1,14 +1,15 @@
 class CreateAccountsController < ApplicationController
 
   def create
-    session[:email] = params[:user][:email]
+    # session[:email] = params[:user][:email]
     @user = User.new(params[:user])
     @user.remember_token = SecureRandom.urlsafe_base64
     if @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
-      redirect_to check_your_email_url, notice: "Registration successful."
+      render :check_your_email, notice: "Registration successful."
     else
-      redirect_to sign_up_url, notice: "Registration unsuccessful"
+      render :new, notice: "Registration unsuccessful"
+      # redirect_to sign_up_url, notice: "Registration unsuccessful"
     end
   end
 
@@ -18,18 +19,18 @@ class CreateAccountsController < ApplicationController
       @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
     end
-    redirect_to check_your_email_url, notice: "Resent confirmation email."
+    render :check_your_email, notice: "Resent confirmation email."
   end
 
   def confirm
     @user = User.find_by_id(params[:id])
-    if @user && (Time.now - @user.reset_password_sent_at) < 24.hours && @user.reset_password_token == params[:reset_password_token]
+    if @user && @user.in_time? && @user.token_matches?(params[:reset_password_token])
       reset_session
       @user.confirm(request.remote_ip)
       session[:user_id] = @user.id
       redirect_to root_url, notice: "User confirmation successful."
     else
-      redirect_to sign_up_url, notice: "User confirmation unsuccessful."
+      render :new, notice: "User confirmation unsuccessful."
     end
   end
 

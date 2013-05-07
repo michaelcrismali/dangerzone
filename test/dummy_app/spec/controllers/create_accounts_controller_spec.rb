@@ -28,7 +28,7 @@ describe CreateAccountsController do
       end
 
       it "redirects them to check_your_email" do
-        expect(response).to redirect_to :check_your_email
+        expect(response).to render_template :check_your_email
       end
     end
 
@@ -38,7 +38,7 @@ describe CreateAccountsController do
       before(:each) { post :create, bad_params }
 
       it "redirects them to the sign up page" do
-        expect(response).to redirect_to :sign_up
+        expect(response).to render_template :new
       end
 
       it "does not persist @user" do
@@ -66,7 +66,7 @@ describe CreateAccountsController do
 
     it "redirects to the check_your_email page" do
       put :resend_confirmation_email
-      expect(response).to redirect_to :check_your_email
+      expect(response).to render_template :check_your_email
     end
 
     describe "when user is not confirmed and has valid email" do
@@ -80,8 +80,9 @@ describe CreateAccountsController do
         old_token = user.reset_password_token
         old_time = user.reset_password_sent_at
         put :resend_confirmation_email, email: user.email
-        expect(User.first.reset_password_token).to_not eq(old_token)
-        expect(User.first.reset_password_sent_at).to_not eq(old_time)
+        user.reload
+        expect(user.reset_password_token).to_not eq(old_token)
+        expect(user.reset_password_sent_at).to_not eq(old_time)
       end
     end
 
@@ -139,7 +140,7 @@ describe CreateAccountsController do
       before { get :confirm, id: user.id, reset_password_token: 'wrong'}
 
       it "redirects them to the sign up page" do
-        expect(response).to redirect_to :sign_up
+        expect(response).to render_template :new
       end
 
       it "does not confirm the user" do
@@ -159,7 +160,7 @@ describe CreateAccountsController do
       end
 
       it "redirects them to the sign up page" do
-        expect(response).to redirect_to :sign_up
+        expect(response).to render_template :new
       end
 
       it "does not confirm the user" do
