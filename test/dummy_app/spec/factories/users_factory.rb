@@ -6,7 +6,7 @@ FactoryGirl.define do
   factory :user do
     email { generate :email }
     password 'password1234'
-    password_confirmation 'password1234'
+    password_confirmation { |u| u.password }
 
     trait :confirmed do
       confirmed true

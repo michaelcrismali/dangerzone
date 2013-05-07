@@ -87,7 +87,4 @@ describe User do
       expect(user.reset_password_token).to be_nil
     end
   end
-
-
-
 end
