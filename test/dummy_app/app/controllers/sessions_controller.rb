@@ -1,6 +1,7 @@
 class SessionsController < ApplicationController
 
   def create
+    log_out
     @user = User.find_by_email(params[:email].try(:downcase))
     if @user.try(:confirmed) && @user.authenticate(params[:password])
       @user.sign_in(request.remote_ip)
@@ -13,11 +14,18 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    cookies.delete(:remember_token)
-    reset_session
+    log_out
     redirect_to :sign_in, notice: "Sign-out successful."
   end
 
   def new
+    redirect_to :root if session[:user_id] || cookies[:remember_token]
+  end
+
+  private
+
+  def log_out
+    cookies.delete(:remember_token)
+    reset_session
   end
 end
