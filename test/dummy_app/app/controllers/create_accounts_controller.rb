@@ -34,5 +34,4 @@ class CreateAccountsController < ApplicationController
 
   def new
   end
-
 end
