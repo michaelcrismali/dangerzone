@@ -4,9 +4,9 @@ class ResetPasswordsController < ApplicationController
     @user = User.find_by_email(params[:email].try(:downcase))
     if @user && @user.update_reset_password_credentials
       DangerzoneMailer.reset_password_email(@user).deliver
-      render :new, notice: "Reset password email successfully sent."
+      redirect_to :forgot_password, notice: "Reset password email successfully sent."
     else
-      render :new, notice: "Reset password email failed to send."
+      redirect_to :forgot_password, notice: "Reset password email failed to send."
     end
   end
 
@@ -15,7 +15,7 @@ class ResetPasswordsController < ApplicationController
     if @user && @user.in_time? && @user.token_matches?(params[:reset_password_token])
       session[:reset_password_user_id] = @user.id
     else
-      render :new, notice: "There was a problem, try having the email resent to you."
+      redirect_to :forgot_password, notice: "There was a problem, try having the email resent to you."
     end
   end
 

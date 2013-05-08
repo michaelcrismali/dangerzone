@@ -8,7 +8,7 @@ describe ResetPasswordsController do
 
     it "renders to forgot_password page (:new)" do
       put :requested_reset_password, email: user.email
-      expect(response).to render_template :new
+      expect(response).to redirect_to :forgot_password
     end
 
     context 'when update_reset_password_credentials is successful' do
@@ -55,7 +55,7 @@ describe ResetPasswordsController do
       before { get :reset_password_form, id: user.id, reset_password_token: 'wrong'}
 
       it "renders the forgot password page" do
-        expect(response).to render_template :new
+        expect(response).to redirect_to :forgot_password
       end
 
       it "does not set the session hash to the user's id" do
@@ -71,7 +71,7 @@ describe ResetPasswordsController do
       end
 
       it "renders the forgot password page" do
-        expect(response).to render_template :new
+        expect(response).to redirect_to :forgot_password
       end
 
       it "does not set the session hash to the user's id" do
