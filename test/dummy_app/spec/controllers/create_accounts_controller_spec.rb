@@ -1,22 +1,16 @@
 require 'spec_helper'
 
 describe CreateAccountsController do
-
-  before { ActionMailer::Base.deliveries = []}
+  before { ActionMailer::Base.deliveries = [] }
 
   describe '#create' do
 
     describe 'when successful' do
+      let(:valid_params) { { user: FactoryGirl.attributes_for(:user) } }
+      before { post :create, valid_params }
 
-      let(:params) { { user: FactoryGirl.attributes_for(:user) } }
-      before { post :create, params }
-
-      it "assigns a user with the values in params" do
-        expect(assigns(:user)).to eq(User.first)
-      end
-
-      it "sets their remember token" do
-        expect(assigns(:user).remember_token).to_not be_nil
+      it "assigns a user with the values in valid_params" do
+        expect(assigns(:user).email).to eq(valid_params[:user][:email])
       end
 
       it "sends them a confirmation email" do
@@ -24,7 +18,7 @@ describe CreateAccountsController do
       end
 
       it "saves the user" do
-        expect(assigns(:user)).to_not be_new_record
+        expect(assigns(:user)).to be_persisted
       end
 
       it "redirects them to check_your_email" do
@@ -33,9 +27,8 @@ describe CreateAccountsController do
     end
 
     describe 'when unsuccessful' do
-
-      let(:bad_params) { {:user => { email: 'x' }}}
-      before(:each) { post :create, bad_params }
+      let(:invalid_params) { {:user => { email: 'x' }}}
+      before(:each) { post :create, invalid_params }
 
       it "redirects them to the sign up page" do
         expect(response).to render_template :new
@@ -52,24 +45,21 @@ describe CreateAccountsController do
   end
 
   describe '#new' do
-
     it "renders the new template" do
       get :new
       expect(response).to render_template :new
     end
-
   end
 
   describe '#resend_confirmation_email' do
-
     let(:user){ FactoryGirl.create(:user) }
 
-    it "redirects to the check_your_email page" do
-      put :resend_confirmation_email
-      expect(response).to render_template :check_your_email
-    end
-
     describe "when user is not confirmed and has valid email" do
+
+      it "redirects to the check_your_email page" do
+        put :resend_confirmation_email, email: user.email
+        expect(response).to render_template :check_your_email
+      end
 
       it "sends a confirmation email" do
         put :resend_confirmation_email, email: user.email
@@ -89,6 +79,11 @@ describe CreateAccountsController do
     describe "when user is already confirmed" do
       let(:confirmed_user) { FactoryGirl.create(:user, :confirmed) }
 
+      it "redirects to the check_your_email page" do
+        put :resend_confirmation_email, email: confirmed_user.email
+        expect(response).to render_template :check_your_email
+      end
+
       it "does not send an email" do
         put :resend_confirmation_email, email: confirmed_user.email
         expect(ActionMailer::Base.deliveries).to be_empty
@@ -102,26 +97,29 @@ describe CreateAccountsController do
 
     describe "when email in params does not belong to any user" do
 
+      it "redirects to the check_your_email page when there is no email in params" do
+        put :resend_confirmation_email
+        expect(response).to render_template :check_your_email
+      end
+
       it "does not send an email" do
-        put :resend_confirmation_email, email: 'notthere@example.com'
+        put :resend_confirmation_email, email: 'not_there@example.com'
         expect(ActionMailer::Base.deliveries).to be_empty
       end
 
       it "does not update their reset password credentials" do
         user.should_not_receive :update_reset_password_credentials
-        put :resend_confirmation_email, email: 'notthere@example.com'
+        put :resend_confirmation_email, email: 'not_there@example.com'
       end
     end
   end
 
   describe "#confirm" do
-
     let(:user){ FactoryGirl.create(:user) }
     before { user.update_reset_password_credentials }
 
     context "user has proper reset password credentials" do
-
-      before {get :confirm, id: user.id, reset_password_token: user.reset_password_token}
+      before { get :confirm, id: user.id, reset_password_token: user.reset_password_token }
 
       it "redirects to the root_url" do
         expect(response).to redirect_to root_url
@@ -172,5 +170,4 @@ describe CreateAccountsController do
       end
     end
   end
-
 end

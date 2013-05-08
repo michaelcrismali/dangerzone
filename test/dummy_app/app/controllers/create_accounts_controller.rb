@@ -1,25 +1,23 @@
 class CreateAccountsController < ApplicationController
 
   def create
-    # session[:email] = params[:user][:email]
     @user = User.new(params[:user])
-    @user.remember_token = SecureRandom.urlsafe_base64
     if @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
       render :check_your_email, notice: "Registration successful."
     else
       render :new, notice: "Registration unsuccessful"
-      # redirect_to sign_up_url, notice: "Registration unsuccessful"
     end
   end
 
   def resend_confirmation_email
     @user = User.find_by_email(params[:email].try(:downcase))
-    if @user && !@user.confirmed
-      @user.update_reset_password_credentials
+    if @user && !@user.confirmed && @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
+      render :check_your_email, notice: 'Resent confirmation email.'
+    else
+      render :check_your_email, notice: 'Unable to resend confirmation email.'
     end
-    render :check_your_email, notice: "Resent confirmation email."
   end
 
   def confirm
