@@ -2,48 +2,44 @@ require 'spec_helper'
 
 describe ResetPasswordsController do
 
-  describe '#send_reset_password' do
-
+  describe '#requested_reset_password' do
     before { ActionMailer::Base.deliveries = []}
     let(:user) { FactoryGirl.create(:user) }
 
-    it "redirects to forgot_password_url" do
-      put :send_reset_password, email: user.email
-      expect(response).to redirect_to :forgot_password
+    it "renders to forgot_password page (:new)" do
+      put :requested_reset_password, email: user.email
+      expect(response).to render_template :new
     end
 
     context 'when update_reset_password_credentials is successful' do
 
       it "sends an email" do
-        put :send_reset_password, email: user.email
+        put :requested_reset_password, email: user.email
         expect(ActionMailer::Base.deliveries).to_not be_empty
       end
 
       it "updates the user's reset password credentials" do
         old_token = user.reset_password_token
         old_time = user.reset_password_sent_at
-        put :send_reset_password, email: user.email
+        put :requested_reset_password, email: user.email
         expect(User.first.reset_password_token).to_not eq(old_token)
         expect(User.first.reset_password_sent_at).to_not eq(old_time)
       end
     end
 
     context 'when update_reset_password_credentials fails' do
-
       it "doesn't send an email" do
-        put :send_reset_password, email: "not an email"
+        put :requested_reset_password, email: "not an email"
         expect(ActionMailer::Base.deliveries).to be_empty
       end
     end
   end
 
   describe '#reset_password_form' do
-
     let(:user){ FactoryGirl.create(:user) }
     before { user.update_reset_password_credentials }
 
     context "user has proper reset password credentials" do
-
       before {get :reset_password_form, id: user.id, reset_password_token: user.reset_password_token}
 
       it "renders reset password form" do
@@ -56,11 +52,10 @@ describe ResetPasswordsController do
     end
 
     context "user does not have right token" do
-
       before { get :reset_password_form, id: user.id, reset_password_token: 'wrong'}
 
-      it "redirects them to the forgot password page" do
-        expect(response).to redirect_to :forgot_password
+      it "renders the forgot password page" do
+        expect(response).to render_template :new
       end
 
       it "does not set the session hash to the user's id" do
@@ -75,15 +70,14 @@ describe ResetPasswordsController do
         get :reset_password_form, id: user.id, reset_password_token: user.reset_password_token
       end
 
-      it "redirects them to the sign up page" do
-        expect(response).to redirect_to :forgot_password
+      it "renders the forgot password page" do
+        expect(response).to render_template :new
       end
 
       it "does not set the session hash to the user's id" do
         expect(session[:reset_password_user_id]).to be_nil
       end
     end
-
   end
 
   describe '#update_password' do
@@ -121,19 +115,19 @@ describe ResetPasswordsController do
     end
 
     context "user is too late" do
-      it "redirects to #send_reset_password" do
+      it "redirects to #requested_reset_password" do
         user.reset_password_sent_at = Time.now - 2.days
         user.save
         put :update_password, password: 'new_password', password_confirmation: 'new_password'
-        expect(response).to redirect_to :send_reset_password
+        expect(response).to redirect_to :requested_reset_password
       end
     end
 
     context "user lacks the proper session credentials" do
-      it "redirects to #send_reset_password" do
+      it "redirects to #requested_reset_password" do
         session[:reset_password_user_id] = nil
         put :update_password, password: 'new_password', password_confirmation: 'new_password'
-        expect(response).to redirect_to :send_reset_password
+        expect(response).to redirect_to :requested_reset_password
       end
     end
   end

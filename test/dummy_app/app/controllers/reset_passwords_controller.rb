@@ -1,13 +1,12 @@
 class ResetPasswordsController < ApplicationController
 
-  def send_reset_password
+  def requested_reset_password
     @user = User.find_by_email(params[:email].try(:downcase))
-    if @user
-      @user.update_reset_password_credentials
+    if @user && @user.update_reset_password_credentials
       DangerzoneMailer.reset_password_email(@user).deliver
-      redirect_to forgot_password_url, notice: "Reset password email successfully sent."
+      render :new, notice: "Reset password email successfully sent."
     else
-      redirect_to forgot_password_url, notice: "Reset password email failed to send."
+      render :new, notice: "Reset password email failed to send."
     end
   end
 
@@ -16,7 +15,7 @@ class ResetPasswordsController < ApplicationController
     if @user && @user.in_time? && @user.token_matches?(params[:reset_password_token])
       session[:reset_password_user_id] = @user.id
     else
-      redirect_to forgot_password_url, notice: "There was a problem, try having the email resent to you."
+      render :new, notice: "There was a problem, try having the email resent to you."
     end
   end
 
@@ -30,14 +29,13 @@ class ResetPasswordsController < ApplicationController
         session[:user_id] = @user.id
         redirect_to root_url, notice: "Password successfully updated."
       else
-        redirect_to reset_password_form_url(@user.id, @user.reset_password_token), notice: "Update password unsuccessful: password confirmation did not match password."
+        redirect_to reset_password_form_path(@user.id, @user.reset_password_token), notice: "Update password unsuccessful: password confirmation did not match password."
       end
     else
-      redirect_to send_reset_password_url, notice: "Update password unsuccessful."
+      redirect_to :requested_reset_password, notice: "Update password unsuccessful."
     end
   end
 
   def new
   end
-
 end
