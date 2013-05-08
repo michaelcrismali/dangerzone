@@ -83,33 +83,33 @@ describe User do
     end
   end
 
-  describe '#confirm' do
+  describe '#confirm!' do
 
     it 'saves the user' do
       user.should_receive(:save)
-      user.confirm('ip address')
+      user.confirm!('ip address')
     end
 
     it 'sets the ip address to the argument' do
       user.sign_in_ip = 'something else'
-      user.confirm('thing')
+      user.confirm!('thing')
       expect(user.sign_in_ip).to eq('thing')
     end
 
     it "makes their confirmed attribute 'true'" do
-      user.confirm('ip')
+      user.confirm!('ip')
       expect(user.confirmed).to be_true
     end
 
     it 'sets reset_password_sent_at to nil' do
       user.reset_password_sent_at = Time.now
-      user.confirm('ip')
+      user.confirm!('ip')
       expect(user.reset_password_sent_at).to be_nil
     end
 
     it 'sets reset_password_token to nil' do
       user.reset_password_token = 'token'
-      user.confirm('ip')
+      user.confirm!('ip')
       expect(user.reset_password_token).to be_nil
     end
   end
@@ -125,7 +125,6 @@ describe User do
       user.stub(:reset_password_sent_at).and_return(Time.now - 5.weeks)
       expect(user).to_not be_in_time
     end
-
   end
 
   describe '#token_matches?' do
@@ -137,6 +136,42 @@ describe User do
 
     it 'returns false if its argument does not match its reset password token' do
       expect(user.token_matches?('invalid_token')).to be_false
+    end
+  end
+
+  describe '#sign_in!' do
+    let(:confirmed_user) { FactoryGirl.create(:user, :confirmed) }
+    let(:password) { confirmed_user.password }
+
+    it 'returns false if the user is not confirmed' do
+      expect(user.sign_in!('ip', user.password)).to be_false
+    end
+
+    it 'returns false if the password is wrong' do
+      expect(user.sign_in!('ip', 'wrong pw')).to be_false
+    end
+
+    it 'updates their sign_in_ip' do
+      old_ip = confirmed_user.sign_in_ip
+      confirmed_user.sign_in!('new ip', password)
+      expect(confirmed_user.sign_in_ip).to eq('new ip')
+    end
+
+    it 'increments their sign_in_count' do
+      old_count = confirmed_user.sign_in_count
+      confirmed_user.sign_in!('ip', password)
+      expect(confirmed_user.sign_in_count).to eq(old_count + 1)
+    end
+
+    it 'gives them a new remember_token' do
+      old_token = confirmed_user.remember_token
+      confirmed_user.sign_in!('ip', password)
+      expect(confirmed_user.sign_in_count).to_not eq(old_token)
+    end
+
+    it 'saves the user' do
+      confirmed_user.should_receive(:save)
+      confirmed_user.sign_in!('ip', password)
     end
   end
 end

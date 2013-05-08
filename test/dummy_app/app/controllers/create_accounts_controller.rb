@@ -24,7 +24,7 @@ class CreateAccountsController < ApplicationController
     @user = User.find_by_id(params[:id])
     if @user && @user.in_time? && @user.token_matches?(params[:reset_password_token])
       reset_session
-      @user.confirm(request.remote_ip)
+      @user.confirm!(request.remote_ip)
       session[:user_id] = @user.id
       redirect_to :root, notice: "User confirmation successful."
     else

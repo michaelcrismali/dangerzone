@@ -13,7 +13,8 @@ class User < ActiveRecord::Base
     self.email = self.email.try(:downcase)
   end
 
-  def sign_in(ip)
+  def sign_in!(ip, pass_word)
+    return false unless self.confirmed && self.authenticate(pass_word)
     self.sign_in_ip = ip
     self.sign_in_count += 1
     self.remember_token = SecureRandom.urlsafe_base64
@@ -26,7 +27,7 @@ class User < ActiveRecord::Base
     self.save
   end
 
-  def confirm(ip)
+  def confirm!(ip)
     self.sign_in_ip = ip
     self.confirmed = true
     self.reset_password_sent_at = nil

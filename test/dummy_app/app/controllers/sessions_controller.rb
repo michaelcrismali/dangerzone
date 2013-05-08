@@ -3,8 +3,7 @@ class SessionsController < ApplicationController
   def create
     clear_cookies
     @user = User.find_by_email(params[:email].try(:downcase))
-    if @user.try(:confirmed) && @user.authenticate(params[:password])
-      @user.sign_in(request.remote_ip)
+    if @user.try(:sign_in!, request.remote_ip, params[:password])
       set_cookies(params[:remember_me])
       redirect_to :root, notice: "Sign-in successful."
     else
