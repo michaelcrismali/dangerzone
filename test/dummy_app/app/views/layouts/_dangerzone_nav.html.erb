@@ -1,6 +1,6 @@
 <% if @current_user.present? %>
   <nav>
-    <%= link_to "Sign-out", sign_out_path, :method => 'delete' %>
+    <%= link_to "Sign-out", sign_out_path, method: 'delete' %>
   </nav>
 <% else %>
   <nav>

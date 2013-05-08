@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   end
 
   def in_time?
-    (Time.now - self.reset_password_sent_at) < 24.hours
+    (Time.now - self.reset_password_sent_at) < 24.hours if self.reset_password_sent_at
   end
 
   def token_matches?(token)
