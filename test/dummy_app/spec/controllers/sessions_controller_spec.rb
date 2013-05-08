@@ -31,9 +31,26 @@ describe SessionsController do
 
   describe '#create' do
     let(:user){ FactoryGirl.create(:user, :confirmed) }
-    let(:params){ {email: user.email, password: 'password1234', remember_me: '0'} }
+    let(:params){ {email: user.email, password: 'password1234'} }
 
     before { controller.reset_session }
+
+    it 'clears cookies before signing in so 2 people cannot be signed in at once (w/out remember me)' do
+      session[:user_id] = 'x'
+      cookies.permanent[:remember_token] = 'some token'
+      post :create, params
+      expect(session[:user_id]).to eq(user.id)
+      expect(cookies[:remember_token]).to be_nil
+    end
+
+    it 'clears cookies before signing in so 2 people cannot be signed in at once (with remember me)' do
+      session[:user_id] = 'x'
+      cookies.permanent[:remember_token] = 'some token'
+      params[:remember_me] = '1'
+      post :create, params
+      expect(session[:user_id]).to be_nil
+      expect(cookies[:remember_token]).to eq(assigns(:user).remember_token)
+    end
 
     context "when a non user email tries to login" do
       it "redirects to the sign in page" do

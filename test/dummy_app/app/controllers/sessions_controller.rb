@@ -1,12 +1,11 @@
 class SessionsController < ApplicationController
 
   def create
-    log_out
+    clear_cookies
     @user = User.find_by_email(params[:email].try(:downcase))
     if @user.try(:confirmed) && @user.authenticate(params[:password])
       @user.sign_in(request.remote_ip)
-      session[:user_id] = @user.id
-      cookies.permanent[:remember_token] = @user.remember_token if params[:remember_me].present?
+      set_cookies(params[:remember_me])
       redirect_to :root, notice: "Sign-in successful."
     else
       redirect_to :sign_in, notice: "Sign-in unsuccessful."
@@ -14,7 +13,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    log_out
+    clear_cookies
     redirect_to :sign_in, notice: "Sign-out successful."
   end
 
@@ -24,7 +23,11 @@ class SessionsController < ApplicationController
 
   private
 
-  def log_out
+  def set_cookies(remember_me)
+    remember_me.present? ? cookies.permanent[:remember_token] = @user.remember_token : session[:user_id] = @user.id
+  end
+
+  def clear_cookies
     cookies.delete(:remember_token)
     reset_session
   end
