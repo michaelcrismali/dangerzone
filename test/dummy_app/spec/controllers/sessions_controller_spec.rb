@@ -33,10 +33,7 @@ describe SessionsController do
     let(:user){ FactoryGirl.create(:user, :confirmed) }
     let(:params){ {email: user.email, password: 'password1234', remember_me: '0'} }
 
-    before do
-      session[:user_id] = nil
-      controller.reset_session
-    end
+    before { controller.reset_session }
 
     context "when a non user email tries to login" do
       it "redirects to the sign in page" do
@@ -45,7 +42,7 @@ describe SessionsController do
       end
     end
 
-    context "bad password" do
+    context "incorrect password" do
       it "redirects to the sign in page" do
         params[:password] = 'wrong'
         post :create, params
@@ -55,8 +52,7 @@ describe SessionsController do
 
     context "user is not confirmed" do
       it "redirects to the sign in page" do
-        unconfirmed_user = FactoryGirl.create(:user, email: 'email@example.com')
-        params[:email] = unconfirmed_user.email
+        params[:email] = FactoryGirl.create(:user).email
         post :create, params
         expect(response).to redirect_to :sign_in
       end
@@ -65,7 +61,7 @@ describe SessionsController do
     context "password is correct and user is confirmed" do
 
       it "updates the user's sign in ip" do
-        user.sign_in_ip =  'old ip'
+        user.sign_in_ip = 'old ip'
         user.save
         post :create, params
         expect(assigns(:user)).to_not eq('old ip')
@@ -74,7 +70,7 @@ describe SessionsController do
       it "increments the user's sign in count" do
         old_sign_in_count = user.sign_in_count
         post :create, params
-        expect(assigns(:user).sign_in_count).to_not eq(old_sign_in_count)
+        expect(assigns(:user).sign_in_count).to eq(old_sign_in_count + 1)
       end
 
       it "redirects to the root url" do

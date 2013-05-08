@@ -13,17 +13,24 @@ class User < ActiveRecord::Base
     self.email = self.email.try(:downcase)
   end
 
+  def sign_in(ip)
+    self.sign_in_ip = ip
+    self.sign_in_count += 1
+    self.remember_token = SecureRandom.urlsafe_base64
+    self.save
+  end
+
   def update_reset_password_credentials
     self.reset_password_sent_at = Time.now
     self.reset_password_token = SecureRandom.urlsafe_base64
     self.save
   end
 
-  def confirm(request_remote_ip)
+  def confirm(ip)
+    self.sign_in_ip = ip
     self.confirmed = true
     self.reset_password_sent_at = nil
     self.reset_password_token = nil
-    self.sign_in_ip = request_remote_ip
     self.save
   end
 
