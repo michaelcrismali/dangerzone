@@ -4,9 +4,9 @@ class CreateAccountsController < ApplicationController
     @user = User.new(params[:user])
     if @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
-      render :check_your_email, notice: "Registration successful."
+      redirect_to :check_your_email, notice: "Registration successful."
     else
-      render :new, notice: "Registration unsuccessful"
+      redirect_to :sign_up, notice: "Registration unsuccessful"
     end
   end
 
@@ -14,9 +14,9 @@ class CreateAccountsController < ApplicationController
     @user = User.find_by_email(params[:email].try(:downcase))
     if @user && !@user.confirmed && @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
-      render :check_your_email, notice: 'Resent confirmation email.'
+      redirect_to :check_your_email, notice: 'Resent confirmation email.'
     else
-      render :check_your_email, notice: 'Unable to resend confirmation email.'
+      redirect_to :check_your_email, notice: 'Unable to resend confirmation email.'
     end
   end
 
@@ -26,9 +26,9 @@ class CreateAccountsController < ApplicationController
       reset_session
       @user.confirm(request.remote_ip)
       session[:user_id] = @user.id
-      redirect_to root_url, notice: "User confirmation successful."
+      redirect_to :root, notice: "User confirmation successful."
     else
-      render :new, notice: "User confirmation unsuccessful."
+      redirect_to :sign_up, notice: "User confirmation unsuccessful."
     end
   end
 

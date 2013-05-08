@@ -22,7 +22,7 @@ describe CreateAccountsController do
       end
 
       it "redirects them to check_your_email" do
-        expect(response).to render_template :check_your_email
+        expect(response).to redirect_to :check_your_email
       end
     end
 
@@ -31,7 +31,7 @@ describe CreateAccountsController do
       before(:each) { post :create, invalid_params }
 
       it "redirects them to the sign up page" do
-        expect(response).to render_template :new
+        expect(response).to redirect_to :sign_up
       end
 
       it "does not persist @user" do
@@ -58,7 +58,7 @@ describe CreateAccountsController do
 
       it "redirects to the check_your_email page" do
         put :resend_confirmation_email, email: user.email
-        expect(response).to render_template :check_your_email
+        expect(response).to redirect_to :check_your_email
       end
 
       it "sends a confirmation email" do
@@ -81,7 +81,7 @@ describe CreateAccountsController do
 
       it "redirects to the check_your_email page" do
         put :resend_confirmation_email, email: confirmed_user.email
-        expect(response).to render_template :check_your_email
+        expect(response).to redirect_to :check_your_email
       end
 
       it "does not send an email" do
@@ -99,7 +99,7 @@ describe CreateAccountsController do
 
       it "redirects to the check_your_email page when there is no email in params" do
         put :resend_confirmation_email
-        expect(response).to render_template :check_your_email
+        expect(response).to redirect_to :check_your_email
       end
 
       it "does not send an email" do
@@ -138,7 +138,7 @@ describe CreateAccountsController do
       before { get :confirm, id: user.id, reset_password_token: 'wrong'}
 
       it "redirects them to the sign up page" do
-        expect(response).to render_template :new
+        expect(response).to redirect_to :sign_up
       end
 
       it "does not confirm the user" do
@@ -158,7 +158,7 @@ describe CreateAccountsController do
       end
 
       it "redirects them to the sign up page" do
-        expect(response).to render_template :new
+        expect(response).to redirect_to :sign_up
       end
 
       it "does not confirm the user" do
