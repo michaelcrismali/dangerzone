@@ -3,68 +3,83 @@ class DangerzoneGenerator < Rails::Generators::Base
 
   source_root File.expand_path('../templates', __FILE__)
 
+  include Rails::Generators::Migration
+  # desc "add the migrations"
+
+  def self.next_migration_number(path)
+    unless @prev_migration_nr
+      @prev_migration_nr = Time.now.utc.strftime('%Y%m%d%H%M%S').to_i
+    else
+      @prev_migration_nr += 1
+    end
+    @prev_migration_nr.to_s
+  end
+
+  def generate_the_create_users_migration_file
+    migration_template 'migration.rb', 'db/migrate/create_users_table_via_dangerzone.rb'
+  end
+
   def edit_the_routes_file
-    routes = IO.read(get_directory + '/templates/routes.rb')
-    line = "::Application.routes.draw do"
+    routes = IO.read(Dir.pwd + '/templates/routes.rb')
+    line = '::Application.routes.draw do'
     gsub_file 'config/routes.rb', /.+(#{Regexp.escape(line)})/mi do |match|
     "#{match}\n\n#{routes}\n"
     end
   end
 
   def get_rid_of_rails_default_index_page_in_index
-    remove_file "public/index.html"
+    remove_file 'public/index.html'
+  end
+
+  def generate_user_model_file
+    copy_files_to_app_dir %w(user.rb), 'models'
   end
 
   def generate_the_nav_partial
-    copy_file "views/nav.html.erb", "app/views/layouts/_dangerzone_nav.html.erb"
+    copy_files_to_app_dir %w(_dangerzone_nav.html.erb), 'views/layouts'
   end
 
   def add_nav_partial_and_notice_to_application_html_erb
     nav = "<%= render 'layouts/dangerzone_nav' %>\n\n<%= notice %>"
-    line = "<body>"
+    line = '<body>'
     gsub_file 'app/views/layouts/application.html.erb', /(#{Regexp.escape(line)})/mi do |match|
       "#{match}\n#{nav}\n"
     end
   end
 
-  def generate_user_model_file
-    copy_file "models/user.rb", "app/models/user.rb"
-  end
-
   def generate_the_controllers
-    copy_file "controllers/create_accounts_controller.rb", "app/controllers/create_accounts_controller.rb"
-    copy_file "controllers/reset_passwords_controller.rb", "app/controllers/reset_passwords_controller.rb"
-    copy_file "controllers/sessions_controller.rb", "app/controllers/sessions_controller.rb"
+    file_names = %w(create_accounts_controller.rb reset_passwords_controller.rb sessions_controller.rb)
+    copy_files_to_app_dir file_names, 'controllers'
   end
 
   def add_methods_to_application_controller
-    app_controller_methods = IO.read(get_directory + '/templates/controllers/application_controller.rb')
-    line = "protect_from_forgery"
+    app_controller_methods = IO.read(Dir.pwd + '/templates/controllers/application_controller.rb')
+    line = 'protect_from_forgery'
     gsub_file 'app/controllers/application_controller.rb', /.+(#{Regexp.escape(line)})/mi do |match|
       "#{match}\n\n#{app_controller_methods}\n"
     end
   end
 
+  def generate_spec_folder
+    empty_directory 'spec'
+  end
+
   def generate_the_specs
-    copy_file "spec/factories/user_factory.rb", "app/spec/factories/user_factory.rb"
-
-    copy_file "spec/controllers/create_accounts_controller_spec.rb", "app/spec/controllers/create_accounts_controller_spec.rb"
-    copy_file "spec/controllers/reset_passwords_controller_spec.rb", "app/spec/controllers/reset_passwords_controller_spec.rb"
-    copy_file "spec/controllers/sessions_controller_spec.rb", "app/spec/controllers/sessions_controller_spec.rb"
-
-    copy_file "spec/models/user_spec.rb", "app/spec/models/user_spec.rb"
-
-    copy_file "spec/spec_helper.rb", "app/spec/spec_helper.rb"
+    copy_files_to_spec_dir %w(users_factory.rb), 'factories'
+    file_names =  %w(create_accounts_controller_spec.rb reset_passwords_controller_spec.rb sessions_controller_spec.rb)
+    copy_files_to_spec_dir file_names, 'controllers'
+    copy_files_to_spec_dir %w(user_spec.rb), 'models'
+    copy_file 'spec/spec_helper.rb', 'spec/spec_helper.rb'
   end
 
   def generate_mailer
-    copy_file "mailers/dangerzone_mailer.rb", "app/mailers/dangerzone_mailer.rb"
+    copy_files_to_app_dir %w(dangerzone_mailer.rb), 'mailers'
   end
 
   def add_mailer_config_to_development_and_test
-    comment = "# Via dangerzone: configures actionmailer to use localhost:3000 as its default url"
+    comment = '# Via dangerzone: configures actionmailer to use localhost:3000 as its default url'
     config_stuff = "config.action_mailer.default_url_options = { :host => 'localhost:3000' }"
-    line = "config.assets.debug = true"
+    line = 'config.assets.debug = true'
     gsub_file 'config/environments/development.rb', /.+(#{Regexp.escape(line)})/mi do |match|
       "#{match}\n\n  #{comment}\n  #{config_stuff}\n\n"
     end
@@ -74,57 +89,39 @@ class DangerzoneGenerator < Rails::Generators::Base
     end
   end
 
-  # def generate_view_directories
-  #   empty_directory "app/views/create_accounts"
-  #   empty_directory "app/views/dangerzone_mailer"
-  #   empty_directory "app/views/reset_passwords"
-  #   empty_directory "app/views/sessions"
-  # end
+  def generate_view_directories
+    file_names = %w(create_accounts dangerzone_mailer reset_passwords sessions)
+    file_names.each { |f| empty_directory "app/views/#{f}" }
+  end
 
   def fill_view_directories
-    copy_file "views/create_accounts/check_your_email.html.erb", "app/views/create_accounts/check_your_email.html.erb"
-    copy_file "views/create_accounts/new.html.erb", "app/views/create_accounts/new.html.erb"
-    copy_file "views/create_accounts/dangerzone.html.erb", "app/views/create_accounts/dangerzone.html.erb"
-
-    copy_file "views/dangerzone_mailer/account_confirmation_email.html.erb", "app/views/dangerzone_mailer/account_confirmation_email.html.erb"
-    copy_file "views/dangerzone_mailer/account_confirmation_email.text.erb", "app/views/dangerzone_mailer/account_confirmation_email.text.erb"
-    copy_file "views/dangerzone_mailer/reset_password_email.html.erb", "app/views/dangerzone_mailer/reset_password_email.html.erb"
-    copy_file "views/dangerzone_mailer/reset_password_email.text.erb", "app/views/dangerzone_mailer/reset_password_email.text.erb"
-
-    copy_file "views/reset_passwords/new.html.erb", "app/views/reset_passwords/new.html.erb"
-    copy_file "views/reset_passwords/reset_password_form.html.erb", "app/views/reset_passwords/reset_password_form.html.erb"
-
-    copy_file "views/sessions/new.html.erb", "app/views/sessions/new.html.erb"
-  end
-
-  include Rails::Generators::Migration
-  desc "add the migrations"
-
-  def self.next_migration_number(path)
-    unless @prev_migration_nr
-      @prev_migration_nr = Time.now.utc.strftime("%Y%m%d%H%M%S").to_i
-    else
-      @prev_migration_nr += 1
-    end
-    @prev_migration_nr.to_s
-  end
-
-  def generate_the_users_migration_file
-    migration_template "migration.rb", "db/migrate/create_users_table_via_dangerzone.rb"
+    file_names = %w(check_your_email.html.erb new.html.erb dangerzone.html.erb)
+    copy_files_to_app_dir(file_names, "views/create_accounts")
+    file_names = %w(account_confirmation_email.html.erb
+                    account_confirmation_email.text.erb
+                    reset_password_email.html.erb
+                    reset_password_email.text.erb)
+    copy_files_to_app_dir(file_names, "views/dangerzone_mailer")
+    copy_files_to_app_dir(%w(new.html.erb reset_password_form.html.erb), 'views/reset_passwords')
+    copy_files_to_app_dir(%w(new.html.erb), 'views/sessions')
   end
 
   private
 
   def gsub_file(relative_destination, regexp, *args, &block)
-    path = relative_destination
-    content = File.read(path).gsub(regexp, *args, &block)
+    content = File.read(relative_destination).gsub(regexp, *args, &block)
     File.open(path, 'wb') { |file| file.write(content) }
   end
 
-  def get_directory
-    directory = __FILE__.split('/')
-    directory.pop
-    directory.join('/')
+  def copy_files_to_app_dir(file_names, gem_path)
+    copy_files_to_specific_dir(file_names, gem_path, 'app')
   end
 
+  def copy_files_to_spec_dir(file_names, gem_path)
+    copy_files_to_specific_dir(file_names, gem_path, 'spec')
+  end
+
+  def copy_files_to_specific_dir(file_names, gem_path, directory)
+    file_names.each { |f| copy_file "#{gem_path}/#{f}", "#{directory}/#{gem_path}/#{f}" }
+  end
 end
