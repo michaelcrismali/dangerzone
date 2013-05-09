@@ -40,14 +40,9 @@ describe ResetPasswordsController do
     before { user.update_reset_password_credentials }
 
     context "user has proper reset password credentials" do
-      before {get :reset_password_form, id: user.id, reset_password_token: user.reset_password_token}
-
       it "renders reset password form" do
+        get :reset_password_form, id: user.id, reset_password_token: user.reset_password_token
         expect(response).to render_template :reset_password_form
-      end
-
-      it "puts the user's id in the session hash" do
-        expect(session[:reset_password_user_id]).to eq(user.id)
       end
     end
 
@@ -90,25 +85,21 @@ describe ResetPasswordsController do
     context 'the user is in time' do
 
       context 'and their password and confirmation match' do
-        before { put :update_password, password: 'new_password', password_confirmation: 'new_password' }
+        before { put :update_password, password: 'new_password', password_confirmation: 'new_password', id: user.id }
 
-        it "clears session at :reset_password_user_id" do
-          expect(session[:reset_password_user_id]).to be_nil
-        end
-
-        it "sets session at :user_id to their user id" do
+        it "sets session[:user_id] to their user id" do
           expect(session[:user_id]).to eq(user.id)
         end
 
         it "redirects them to the root_url" do
-          expect(response).to redirect_to root_url
+          expect(response).to redirect_to :root
         end
       end
 
-      context "and their password and confirmation don't match" do
+      context "but their password and confirmation don't match" do
         it "redirects them to the reset password form" do
-          put :update_password, password: 'new_password', password_confirmation: "doesn't match"
-          expect(response).to redirect_to reset_password_form_url(user.id, user.reset_password_token)
+          put :update_password, password: 'new_password', password_confirmation: "doesn't match", id: user.id
+          expect(response).to redirect_to reset_password_form_path(user.id, user.reset_password_token)
         end
       end
 
@@ -118,16 +109,15 @@ describe ResetPasswordsController do
       it "redirects to #requested_reset_password" do
         user.reset_password_sent_at = Time.now - 2.days
         user.save
-        put :update_password, password: 'new_password', password_confirmation: 'new_password'
-        expect(response).to redirect_to :requested_reset_password
+        put :update_password, password: 'new_password', password_confirmation: 'new_password', id: user.id
+        expect(response).to redirect_to :forgot_password
       end
     end
 
-    context "user lacks the proper session credentials" do
-      it "redirects to #requested_reset_password" do
-        session[:reset_password_user_id] = nil
-        put :update_password, password: 'new_password', password_confirmation: 'new_password'
-        expect(response).to redirect_to :requested_reset_password
+    context "incorrect id comes in" do
+      it "redirects to #forgot_password" do
+        put :update_password, password: 'new_password', password_confirmation: 'new_password', id: 1234124
+        expect(response).to redirect_to :forgot_password
       end
     end
   end
