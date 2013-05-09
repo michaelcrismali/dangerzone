@@ -1,30 +1,33 @@
 class SessionsController < ApplicationController
 
   def create
-    @user = User.find_by_email(params[:email].downcase)
-    if @user && @user.authenticate(params[:password]) && @user.confirmed
-      @user.sign_in_ip = request.remote_ip
-      @user.sign_in_count = @user.sign_in_count + 1
-      if params[:remember_me] == '1'
-        @user.remember_token = SecureRandom.urlsafe_base64
-        cookies.permanent[:remember_token] = @user.remember_token
-      else
-        session[:user_id] = @user.id
-      end
-      @user.save
-      redirect_to root_url, :notice => "Sign-in successful."
+    clear_cookies
+    @user = User.find_by_email(params[:email].try(:downcase))
+    if @user.try(:sign_in!, request.remote_ip, params[:password])
+      set_cookies(params[:remember_me])
+      redirect_to :root, notice: "Sign-in successful."
     else
-      redirect_to sign_in_url, :notice => "Sign-in unsuccessful."
+      redirect_to :sign_in, notice: "Sign-in unsuccessful."
     end
   end
 
   def destroy
-    cookies.delete(:remember_token)
-    reset_session
-    redirect_to sign_in_url, :notice => "Sign-out successful."
+    clear_cookies
+    redirect_to :sign_in, notice: "Sign-out successful."
   end
 
   def new
+    redirect_to :root if session[:user_id] || cookies[:remember_token]
   end
 
+  private
+
+  def set_cookies(remember_me)
+    remember_me.present? ? cookies.permanent[:remember_token] = @user.remember_token : session[:user_id] = @user.id
+  end
+
+  def clear_cookies
+    cookies.delete(:remember_token)
+    reset_session
+  end
 end

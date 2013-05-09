@@ -45,25 +45,41 @@ class DangerzoneGenerator < Rails::Generators::Base
     end
   end
 
+  def generate_the_specs
+    copy_file "spec/factories/user_factory.rb", "app/spec/factories/user_factory.rb"
+
+    copy_file "spec/controllers/create_accounts_controller_spec.rb", "app/spec/controllers/create_accounts_controller_spec.rb"
+    copy_file "spec/controllers/reset_passwords_controller_spec.rb", "app/spec/controllers/reset_passwords_controller_spec.rb"
+    copy_file "spec/controllers/sessions_controller_spec.rb", "app/spec/controllers/sessions_controller_spec.rb"
+
+    copy_file "spec/models/user_spec.rb", "app/spec/models/user_spec.rb"
+
+    copy_file "spec/spec_helper.rb", "app/spec/spec_helper.rb"
+  end
+
   def generate_mailer
     copy_file "mailers/dangerzone_mailer.rb", "app/mailers/dangerzone_mailer.rb"
   end
 
-  def add_mailer_config_to_development
+  def add_mailer_config_to_development_and_test
     comment = "# Via dangerzone: configures actionmailer to use localhost:3000 as its default url"
     config_stuff = "config.action_mailer.default_url_options = { :host => 'localhost:3000' }"
     line = "config.assets.debug = true"
     gsub_file 'config/environments/development.rb', /.+(#{Regexp.escape(line)})/mi do |match|
       "#{match}\n\n  #{comment}\n  #{config_stuff}\n\n"
     end
+    line = 'config.active_support.deprecation = :stderr'
+    gsub_file 'config/environments/test.rb', /.+(#{Regexp.escape(line)})/mi do |match|
+      "#{match}\n\n  #{comment}\n  #{config_stuff}\n\n"
+    end
   end
 
-  def generate_view_directories
-    empty_directory "app/views/create_accounts"
-    empty_directory "app/views/dangerzone_mailer"
-    empty_directory "app/views/reset_passwords"
-    empty_directory "app/views/sessions"
-  end
+  # def generate_view_directories
+  #   empty_directory "app/views/create_accounts"
+  #   empty_directory "app/views/dangerzone_mailer"
+  #   empty_directory "app/views/reset_passwords"
+  #   empty_directory "app/views/sessions"
+  # end
 
   def fill_view_directories
     copy_file "views/create_accounts/check_your_email.html.erb", "app/views/create_accounts/check_your_email.html.erb"
