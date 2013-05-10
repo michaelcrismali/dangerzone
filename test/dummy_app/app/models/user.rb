@@ -13,31 +13,31 @@ class User < ActiveRecord::Base
 
   validates_presence_of :email
   validates_uniqueness_of :email
-  validates :password, :password, presence: true, if: :new_record?
+  validates :password, :password_confirmation, presence: true, if: :new_record?
   validates_format_of :email, with: /.+@.+\..+/i
 
   before_save { self.email = self.email.try(:downcase) }
 
   def update_reset_password_credentials
-    update_attributes(
+    self.update_attributes(
       reset_password_sent_at: Time.now,
-      reset_password_token:  SecureRandom.urlsafe_base64)
+      reset_password_token:  SecureRandom.urlsafe_base64 )
   end
 
   def sign_in!(ip, password_param)
     return false unless self.confirmed && self.authenticate(password_param)
-    update_attributes(
+    self.update_attributes(
       sign_in_ip: ip,
       sign_in_count: (self.sign_in_count + 1),
-      remember_token: SecureRandom.urlsafe_base64)
+      remember_token: SecureRandom.urlsafe_base64 )
   end
 
   def confirm!(ip)
-    update_attributes(
+    self.update_attributes(
       sign_in_ip: ip,
       confirmed: true,
       reset_password_sent_at: nil,
-      reset_password_token: nil)
+      reset_password_token: nil )
   end
 
   def in_time?
