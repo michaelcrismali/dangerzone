@@ -18,11 +18,10 @@ You'll need these gems (and their dependencies) to use Dangerzone:
 * Rails 3.2
 * Bcrypt-ruby 3.0
 
-You'll need these gems when developing
+You'll need these gems when developing/testing
 
-* Rspec-rails 2.13.1
-* Capybara 2.1.0
-* Factory_Girl_Rails 4.2.1
+* Rspec-rails 2.13
+* Factory_Girl_Rails 4.2
 
 
 ## How to install
@@ -147,7 +146,8 @@ can add them to before\_filters)
 * app/views/create\_accounts/new.html.erb
 * app/views/create\_accounts/dangerzone.html.erb
 * app/views/dangerzone\_mailer/account\_confirmation\_email.html.erb
-* app/views/dangerzone\_mailer/account\_confirmation\_email.text.erb
+* app/views/dangerzone\_mailer/account\_confirmation\_email.text
+.erb
 * app/views/dangerzone\_mailer/reset\_password\_email.html.erb
 * app/views/dangerzone\_mailer/reset\_password\_email.text.erb
 * app/views/layouts/\_dangerzone\_nav.html.erb
