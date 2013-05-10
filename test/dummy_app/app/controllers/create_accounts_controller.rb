@@ -12,7 +12,7 @@ class CreateAccountsController < ApplicationController
 
   def resend_confirmation_email
     @user = User.find_by_email(params[:email].try(:downcase))
-    if @user && !@user.confirmed && @user.update_reset_password_credentials
+    if @user.try(:update_reset_password_credentials) && !@user.confirmed
       DangerzoneMailer.account_confirmation_email(@user).deliver
       redirect_to :check_your_email, notice: 'Resent confirmation email.'
     else

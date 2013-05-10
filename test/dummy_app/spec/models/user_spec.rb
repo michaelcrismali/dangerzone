@@ -168,10 +168,5 @@ describe User do
       confirmed_user.sign_in!('ip', password)
       expect(confirmed_user.sign_in_count).to_not eq(old_token)
     end
-
-    it 'saves the user' do
-      confirmed_user.should_receive(:save)
-      confirmed_user.sign_in!('ip', password)
-    end
   end
 end
