@@ -5,6 +5,12 @@ describe CreateAccountsController do
 
   describe '#create' do
 
+    it "saves an unconfirmed user" do
+      params = { user: FactoryGirl.attributes_for(:user, :confirmed) }
+      post :create, params
+      expect(assigns(:user).confirmed).to be_false
+    end
+
     describe 'when successful' do
       let(:valid_params) { { user: FactoryGirl.attributes_for(:user) } }
       before { post :create, valid_params }

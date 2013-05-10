@@ -2,6 +2,7 @@ class CreateAccountsController < ApplicationController
 
   def create
     @user = User.new(params[:user])
+    @user.confirmed = false
     if @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
       redirect_to :check_your_email, notice: "Registration successful."
