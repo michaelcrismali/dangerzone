@@ -21,8 +21,7 @@ class User < ActiveRecord::Base
   def update_reset_password_credentials
     update_attributes(
       reset_password_sent_at: Time.now,
-      reset_password_token:  SecureRandom.urlsafe_base64
-      )
+      reset_password_token:  SecureRandom.urlsafe_base64)
   end
 
   def sign_in!(ip, password_param)
