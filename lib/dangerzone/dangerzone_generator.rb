@@ -20,7 +20,7 @@ class DangerzoneGenerator < Rails::Generators::Base
   end
 
   def edit_the_routes_file
-    routes = IO.read(Dir.pwd + '/templates/routes.rb')
+    routes = IO.read(get_directory + '/templates/routes.rb')
     line = '::Application.routes.draw do'
     gsub_file 'config/routes.rb', /.+(#{Regexp.escape(line)})/mi do |match|
     "#{match}\n\n#{routes}\n"
@@ -53,7 +53,7 @@ class DangerzoneGenerator < Rails::Generators::Base
   end
 
   def add_methods_to_application_controller
-    app_controller_methods = IO.read(Dir.pwd + '/templates/controllers/application_controller.rb')
+    app_controller_methods = IO.read(get_directory + '/templates/controllers/application_controller.rb')
     line = 'protect_from_forgery'
     gsub_file 'app/controllers/application_controller.rb', /.+(#{Regexp.escape(line)})/mi do |match|
       "#{match}\n\n#{app_controller_methods}\n"
@@ -62,6 +62,9 @@ class DangerzoneGenerator < Rails::Generators::Base
 
   def generate_spec_folder
     empty_directory 'spec'
+    empty_directory 'spec/models'
+    empty_directory 'spec/factories'
+    empty_directory 'spec/controllers'
   end
 
   def generate_the_specs
@@ -110,7 +113,13 @@ class DangerzoneGenerator < Rails::Generators::Base
 
   def gsub_file(relative_destination, regexp, *args, &block)
     content = File.read(relative_destination).gsub(regexp, *args, &block)
-    File.open(path, 'wb') { |file| file.write(content) }
+    File.open(relative_destination, 'wb') { |file| file.write(content) }
+  end
+
+  def get_directory
+    directory = __FILE__.split('/')
+    directory.pop
+    directory.join('/')
   end
 
   def copy_files_to_app_dir(file_names, gem_path)
@@ -118,7 +127,7 @@ class DangerzoneGenerator < Rails::Generators::Base
   end
 
   def copy_files_to_spec_dir(file_names, gem_path)
-    copy_files_to_specific_dir(file_names, gem_path, 'spec')
+    file_names.each { |f| copy_file "spec/#{gem_path}/#{f}", "spec/#{gem_path}/#{f}" }
   end
 
   def copy_files_to_specific_dir(file_names, gem_path, directory)
