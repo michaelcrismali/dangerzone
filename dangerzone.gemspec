@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.name        = 'dangerzone'
-  s.version     = '0.5.0'
-  s.date        = '2013-05-12'
+  s.version     = '0.5.1'
+  s.date        = '2013-05-13'
   s.license     = 'MIT'
   s.summary     = 'Takes care of creating accounts, login, logout, forgot password, etc. in Rails apps'
   s.email       = 'michael.crismali@gmail.com'
