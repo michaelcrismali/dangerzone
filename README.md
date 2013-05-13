@@ -4,21 +4,26 @@
 Dangerzone handles sign-in, sign-out, creating new accounts, confirmation emails, reset password emails,
 and user authentification stuff that pretty much every web app needs.
 
-It's pretty much a really stripped down Devise. While Devise is designed for people with a lot of experience,
-Dangerzone is more for beginners. All of the files it generates and logic it appends are easy to find and
-explore (hopefully, anyway), so if you're new to Rails you can use Dangerzone to learn (also hopefully).
+It's pretty much a really stripped down and above the board Devise. While Devise is designed for people with a
+lot of experience, Dangerzone is more for beginners. All of the files it generates and logic it appends are
+easy to find and explore (hopefully, anyway), so if you're new to Rails you can use Dangerzone to learn
+(also hopefully).
 
 It's also for people who maybe have more experience and don't want to spend time writing all of this stuff
 out by hand but don't want to use Devise for whatever reason (ie those with some experience but still
 don't understand Devise)
 
+At some point there'll be more options, like a version that's a bit more explicit in what it's doing and a version
+with a ton of comments that explain what's going on ('this is a ternary operator' or 'methods that end with question marks
+usually return true or false'). Also, a version where you can opt out of generating the specs.
+
 ## Dependencies
-You'll need these gems (and their dependencies) to use Dangerzone:
+You'll need these gems to use Dangerzone:
 
 * Rails 3.2
 * Bcrypt-ruby 3.0
 
-You'll need these gems when developing/testing
+Dangerzone also generates some specs and a factory for you. You'll need these gems if you actually want to use them.
 
 * Rspec-rails 2.13
 * Factory_Girl_Rails 4.2
@@ -40,14 +45,13 @@ gem 'dangerzone'
 And then ```bundle``` or ```bundle install```.
 
 ## How to use
-
 First, add this to your Gemfile:
 
 ```ruby
 gem 'dangerzone'
 ```
 
-Then bundle or bundle install.
+Then ```bundle``` or ````bundle install```.
 
 Then run this command from your app's root directory:
 
@@ -55,7 +59,7 @@ Then run this command from your app's root directory:
 rails generate dangerzone
 ```
 
-You can also put '```g```'' instead of '```generate```' if you're really in a hurry. Anyway, you should see something that
+You can also put '```g```' instead of '```generate```' if you're really in a hurry. Anyway, you should see something that
 looks like this:
 
 ```ruby
@@ -70,7 +74,7 @@ looks like this:
       [etc...]
 ```
 
-Now, if you're in a fresh app, all you really have to do is ```rake db:migrate```
+Now, if you're in a fresh app, all you really have to do is ```rake db:migrate```.
 
 Note: If you're adding Dangerzone to an existing app then things can be a bit more tricky. For instance,
 if you've changed your code in certain places Dangerzone may not edit the files correctly. It may

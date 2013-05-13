@@ -1,7 +1,8 @@
 class User < ActiveRecord::Base
   has_secure_password
 
-  attr_accessible :email,
+  attr_accessible(
+    :email,
     :password,
     :password_confirmation,
     :reset_password_token,
@@ -9,7 +10,7 @@ class User < ActiveRecord::Base
     :sign_in_ip,
     :sign_in_count,
     :confirmed,
-    :remember_token
+    :remember_token )
 
   validates_presence_of :email
   validates_uniqueness_of :email

@@ -2,7 +2,7 @@ class ResetPasswordsController < ApplicationController
 
   def requested_reset_password
     @user = User.find_by_email(params[:email].try(:downcase))
-    if @user && @user.update_reset_password_credentials
+    if @user.try(:update_reset_password_credentials)
       DangerzoneMailer.reset_password_email(@user).deliver
       redirect_to :forgot_password, notice: "Reset password email successfully sent."
     else

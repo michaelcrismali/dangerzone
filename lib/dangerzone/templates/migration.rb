@@ -8,8 +8,8 @@ class CreateUsersTableViaDangerzone < ActiveRecord::Migration
       t.string   :remember_token
       t.string   :reset_password_token
       t.datetime :reset_password_sent_at
-      t.boolean  :confirmed,              :default => false
-      t.integer  :sign_in_count,          :default => 1
+      t.boolean  :confirmed,              default: false
+      t.integer  :sign_in_count,          default: 1
 
       t.timestamps
     end

@@ -2,6 +2,7 @@ class CreateAccountsController < ApplicationController
 
   def create
     @user = User.new(params[:user])
+    @user.confirmed = false
     if @user.update_reset_password_credentials
       DangerzoneMailer.account_confirmation_email(@user).deliver
       redirect_to :check_your_email, notice: "Registration successful."
@@ -12,7 +13,7 @@ class CreateAccountsController < ApplicationController
 
   def resend_confirmation_email
     @user = User.find_by_email(params[:email].try(:downcase))
-    if @user && !@user.confirmed && @user.update_reset_password_credentials
+    if @user.try(:update_reset_password_credentials) && !@user.confirmed
       DangerzoneMailer.account_confirmation_email(@user).deliver
       redirect_to :check_your_email, notice: 'Resent confirmation email.'
     else
@@ -22,7 +23,7 @@ class CreateAccountsController < ApplicationController
 
   def confirm
     @user = User.find_by_id(params[:id])
-    if @user && @user.in_time? && @user.token_matches?(params[:reset_password_token])
+    if @user.try(:in_time?) && @user.token_matches?(params[:reset_password_token])
       reset_session
       @user.confirm!(request.remote_ip)
       session[:user_id] = @user.id
